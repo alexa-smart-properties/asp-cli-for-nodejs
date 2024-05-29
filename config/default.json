@@ -1,0 +1,24 @@
+{
+    "defaults" : 
+    {
+      "orgid": ""
+    },
+    "asp_cli": {
+      "delay":  "300",
+      "aspapibase": "https://api.amazonalexa.com",
+      "auth": "oauthLocal"
+    },
+    "secretsManager" : {
+      "secretNameForOAuth": "<secretname>",
+      "versionStage": "AWSCURRENT",
+      "regionName": "<region>"
+    },
+    "oauthLocal": {
+      "client_id": "<client_id>",
+      "client_secret": "<client_secret>",
+      "refresh_token":"<refresh_token>",
+      "cacheToken": true,
+      "token_file": "token.json",
+      "access_token":""
+    }
+}

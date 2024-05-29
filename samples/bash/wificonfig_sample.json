@@ -1,0 +1,45 @@
+[{
+    "credentialConfiguration": {
+        "eapAuthenticationMethod": "EAP_TLS",
+        "certificateAuthority": {
+            "providerName": "ALEXA_ENTERPRISE",
+            "id": "amzn1.alexa.enterprise.certificateAuthority.did.EXAMPLE_ID_VALUE"
+        },
+        "authenticationServerCertificates": [
+            "-----BEGIN CERTIFICATE-----\nCERTIFICATE_CONTENT\nMULTIPLE_LINES_WITH_LINE_BREAK_CHARACTERS\n-----END CERTIFICATE-----",
+            "-----BEGIN CERTIFICATE-----\nCERTIFICATE_CONTENT\nMULTIPLE_LINES_WITH_LINE_BREAK_CHARACTERS\n-----END CERTIFICATE-----"
+        ]
+    },
+    "ssid": "\"wifi-ssid\"",
+    "keyManagement": "WPA2_EAP"
+    },
+    {
+        "credentialConfiguration": {
+            "privateSharedKey": "\"wifi-password\""
+        },
+        "ssid": "\"wifi-ssid1\"",
+        "keyManagement": "WPAPSK"
+    }
+    ,
+    {
+        "credentialConfiguration": {
+            "privateSharedKey": "\"wifi-password\""
+        },
+        "ssid": "\"wifi-ssid2\"",
+        "keyManagement": "WPAPSK"
+    },
+    {
+        "credentialConfiguration": {
+            "privateSharedKey": "\"wifi-password\""
+        },
+        "ssid": "\"wifi-ssid3\"",
+        "keyManagement": "WPAPSK"
+    },
+    {
+        "credentialConfiguration": {
+            "privateSharedKey": "\"wifi-password\""
+        },
+        "ssid": "\"wifi-ssid4\"",
+        "keyManagement": "WPAPSK"
+    }
+]
