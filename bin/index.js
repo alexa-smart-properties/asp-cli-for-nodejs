@@ -29,7 +29,7 @@ import * as aspUsers from '../utils/aspUsers.js';
 import * as aspCampaigns from '../utils/aspCampaigns.js';
 import * as aspDirect from '../utils/aspDirect.js';
 import * as aspWebRTC from '../utils/aspWebRTC.js';
-
+import * as aspPBX from '../utils/aspPBX.js';
 
 async function initSettings()
 {
@@ -105,8 +105,16 @@ const actions = {
     var data = await  aspProperty.deleteUnit(argv.unitid);
     outputResults(data);
   },
+  //EU only currently
+  "get-consent-status": async function() {
+    var data = await  aspProperty.getConsentStatus(argv.unitid, argv.consenttype);
+    outputResults(data);
+  },
+  "reset-consent": async function() {
+    var data = await  aspProperty.resetConsent(argv.unitid);
+    outputResults(data);
+  },
 
-//v
 /////// Processes //////////////////////////
 "create-property": async function() {
   //longer api call delay required for createProperty
@@ -116,11 +124,9 @@ const actions = {
 
 "update-property": async function() {
   var data = await useFileCache(...arguments);
-  //console.log(JSON.stringify({update:"completed","statuscode":200}, null, 2));
 },
 
 
-//v
 /////// Cache actions //////////////////////////
 
   "update-cache": async function() {
@@ -371,6 +377,53 @@ const actions = {
       outputResults(data);
       },
 
+     ///////// PBX //////////////////////////   
+     
+     "create-sip-trunk": async function() {
+        var data = await aspPBX.createSipTrunk(argv.certchains, argv.certchainnames, argv.peernames,argv.peerports, argv.peerips);
+        outputResults(data);
+      },
+
+      "get-sip-trunk": async function() {
+        var data = await aspPBX.getSipTrunk(argv.trunkid);
+        outputResults(data);
+      },
+      "get-sip-trunks": async function() {
+        var data = await aspPBX.getSipTrunks();
+        outputResults(data);
+      },
+
+      "update-sip-trunk": async function() {
+        var data = await aspPBX.updateSipTrunk(argv.trunkid,argv.certchains, argv.certchainnames, argv.peernames,argv.peerports, argv.peerips);
+        outputResults(data);
+      },
+
+      "delete-sip-trunk": async function() {
+        var data = await aspPBX.deleteSipTrunk(argv.trunkid);
+        outputResults(data);
+      },
+
+      "create-extension-mapping": async function() {
+        var data = await aspPBX.mapExtension(argv.trunkid, argv.extension, argv.profileid, argv.routingtype);
+        outputResults(data);
+      },
+      "get-extension-mapping": async function() { 
+        var data = await aspPBX.getExtensionMapping(argv.trunkid, argv.extension);
+        outputResults(data);
+      },
+      "update-extension-mapping": async function() {
+        var data = await aspPBX.updateExtensionMapping(argv.trunkid, argv.extension, argv.profileid, argv.routingtype);
+        outputResults(data);
+      },
+      "delete-extension-mapping": async function() {
+        var data = await aspPBX.deleteExtensionMapping(argv.trunkid, argv.extension);
+        outputResults(data);
+      },
+      "list-extensions": async function() {
+        var data = await aspPBX.listExtensions(argv.trunkid);
+        outputResults(data);
+      },
+
     ///////// Endpoints //////////////////////////
 
   "get-endpoints": async function() {
@@ -613,7 +666,7 @@ const actions = {
   },
 
   "send-notification": async function() {
-    var data = await aspNotifications.sendNotification(argv.unitids,argv.recipienttype, argv.type, argv.text, argv.locale,argv.template, 
+    var data = await aspNotifications.sendNotification(argv.unitids,argv.endpointids, argv.type, argv.text, argv.locale,argv.template, 
       argv.headertext, argv.primarytext, argv.secondarytext, argv.tertiarytext, argv.hinttext, argv.attributiontext, argv.ratingtext, argv.rating,
       argv.background,argv.thumbnail,argv.attributionimage, argv.coloroverlay, argv.dismissaltime, argv.dismissalhours, argv.dismissalminutes,
      /*PVA 2.0*/ argv.starttime, argv.indicatorsound, argv.interruptionlevel, argv.restrictactions, argv.optionlistdata);

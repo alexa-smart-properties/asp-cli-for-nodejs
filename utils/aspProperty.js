@@ -175,3 +175,37 @@ export async function getDeviceGroupsByUnitId(unitId, maxResults = 10) {
   const data = await getAPICombinedResults(config); 
   return data;
 }
+
+//get-consent-status
+export async function getConsentStatus(unitId, consentType="health_data") {
+  let config = {
+    method: 'get',
+    url: `/v2/units/${unitId}/consent?consentType=${consentType}`,
+    headers: {
+      Host: 'api.eu.amazonalexa.com'
+    }
+  };
+
+  const data = await getAPIResponse(config);
+  return data;
+}
+
+//reset-consent
+export async function resetConsent(unitId) {
+  let config = {
+    method: 'put',
+    url: `/v2/units/${unitId}/consent/reset`,
+    headers: {
+      Host: 'api.amazonalexa.com'
+    }
+  };
+
+  const data = await getAPIResponse(config);
+  return data;
+}
+
+
+
+
+
+

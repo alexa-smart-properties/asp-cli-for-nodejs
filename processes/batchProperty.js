@@ -187,7 +187,7 @@ export async function useJSONCache() {
             console.log(`{"apply":"${args.apply}", "results":[`);
             while (unitids.length > 0) {
                 let batchUnitIds = unitids.splice(0, batchUnitIdsMax);
-                var data = await aspNotifications.sendNotification(batchUnitIds.join(","), argv.recipienttype, args.type, args.text, args.locale,args.template, 
+                var data = await aspNotifications.sendNotification(batchUnitIds.join(","), null, args.type, args.text, args.locale,args.template, 
                 args.headertext, args.primarytext, args.secondarytext, args.tertiarytext, args["hinttext"], args.attributiontext, args.ratingtext, args.rating,
                 args.background,args.thumbnail,args.attributionimage, args.coloroverlay, args.dismissaltime, argv.dismissalhours, argv.dismissalminutes);
                 console.log(JSON.stringify(data, null, 2) + ",");

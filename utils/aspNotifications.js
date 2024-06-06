@@ -38,7 +38,7 @@ export async function deleteAllNotifications(unitids, type = "DeviceNotification
 }
 
 //send-notification
-export async function sendNotification(recipients, recipientType="Unit", type="DeviceNotification", text, locale ="en-US", template="wrapping", 
+export async function sendNotification(unitids, endpointids, type="DeviceNotification", text, locale ="en-US", template="wrapping", 
                                         headerText="", primaryText="", secondaryText="", tertiaryText="", hintText="", attributionText="",ratingText="",rating="0",
                                         background,thumbnail,attributionImage, colorOverlay=true, dismissalTime, dismissalHours, dismissalMinutes,
                                         startTime, indicatorSound, interruptionLevel, restrictActions, optionListData) {
@@ -139,25 +139,22 @@ export async function sendNotification(recipients, recipientType="Unit", type="D
           break;
           case 'optionlist':
             datasources = {
-              "displayText": {
-                "primaryText": primaryText
-              },
+              "headerText": {"value": headerText},
               "primaryText":{"value":primaryText},
               "secondaryText":{"value":secondaryText},
-              "primaryText":{"value":primaryText},
               "hintText":{"value":hintText},
-              "backgroundImage": {
-                "src": background,
-                colorOverlay: colorOverlay
-              },
-              "attributionImage": {
-                "src": attributionImage
-              },
-              "thumbnailImage": {
-                "src": thumbnail
-              },
-              optionlist: JSON.parse(optionListData)
+              optionList: JSON.parse(optionListData)
             }
+            if (background) {datasources.backgroundImage = {
+              "src": background,
+              colorOverlay: colorOverlay
+            };}
+            if (attributionImage) {datasources.attributionImage = {
+              "src": attributionImage
+            };}
+            if (thumbnail) {datasources.thumbnailImage = {
+              "src": thumbnail
+            };}
             break;
       }
 
@@ -174,6 +171,14 @@ export async function sendNotification(recipients, recipientType="Unit", type="D
 
 
   }
+
+  if (unitids && endpointids) {
+    throw new Error("Only one of unitids or endpointids can be specified in the the CLI.");
+  }
+
+  let recipientType = (endpointids) ? "Endpoint" : "Unit";
+  let recipients = (endpointids) ? endpointids :  unitids;
+
   const config = {
     method: 'post',
     url: '/v3/notifications',
@@ -181,7 +186,7 @@ export async function sendNotification(recipients, recipientType="Unit", type="D
       'Accept': 'application/json'
     },
     data: {
-      recipients: recipients,
+      //recipients: recipients,
       notification: {
         variants: [
           {
@@ -199,7 +204,6 @@ export async function sendNotification(recipients, recipientType="Unit", type="D
       }
     }
   };
-
 
   let deliveryPreferences = {};
 

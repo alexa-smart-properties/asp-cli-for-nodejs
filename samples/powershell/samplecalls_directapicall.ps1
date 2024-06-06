@@ -45,7 +45,7 @@ $optionlistdata = ($optionlistdata | ConvertTo-Json).Replace('\n','')  | Convert
 echo $optionlistdata 
 
 $menuNotification = asp-cli send-notification --unitids $unitid --type pva --template optionlist --primarytext "wrapping alert" --secondarytext "secondary text" `
-                                              --optionlistdata $optionlistdata --starttime "2024-05-10T00:16:53.818Z" --dismissalminutes 90 --includeapicall --output results[0].apicall
+                                              --optionlistdata $optionlistdata --indicatorsound "CHIME" --starttime "2024-05-10T00:16:53.818Z" --dismissalminutes 90 --includeapicall --output results[0].apicall
 
 $menuNotification > "menuNotification.json"  
 
