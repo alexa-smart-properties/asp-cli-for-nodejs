@@ -30,6 +30,7 @@ import * as aspCampaigns from '../utils/aspCampaigns.js';
 import * as aspDirect from '../utils/aspDirect.js';
 import * as aspWebRTC from '../utils/aspWebRTC.js';
 import * as aspPBX from '../utils/aspPBX.js';
+import * as aspEvents from '../utils/aspEvents.js';
 
 async function initSettings()
 {
@@ -70,8 +71,7 @@ async function initSettings()
 
 await initSettings();
 
-const actions = {
-
+export const actions = {
 
   ///////// ASP Property actions //////////////////////////
 
@@ -670,7 +670,7 @@ const actions = {
       argv.headertext, argv.primarytext, argv.secondarytext, argv.tertiarytext, argv.hinttext, argv.attributiontext, argv.ratingtext, argv.rating,
       argv.background,argv.thumbnail,argv.attributionimage, argv.coloroverlay, argv.dismissaltime, argv.dismissalhours, argv.dismissalminutes,
      /*PVA 2.0*/ argv.starttime, argv.indicatorsound, argv.interruptionlevel, argv.restrictactions, argv.optionlistdata);
-    outputResults(data);
+    return outputResults(data);
   },
 
   ///////// Users //////////////////////////
@@ -723,6 +723,55 @@ const actions = {
     outputResults(data);
   },
 
+///////// SNS Events //////////////////////////
+  // create-subscription-configuration
+  "create-subscription-configuration": async function() {
+    var data = await aspEvents.createSubscriptionConfiguration(argv.type, argv.channelids);
+    return outputResults(data);
+  },
+
+// get-subscription-configuration
+  "get-subscription-configuration": async function() {  
+    var data = await aspEvents.getSubscriptionConfigurationById(argv.configurationid);
+    return outputResults(data);
+  },
+
+  // get-subscription-configurations
+  "get-subscription-configurations": async function() {  
+    var data = await aspEvents.getSubscriptionConfigurations();
+    return outputResults(data);
+  },
+
+
+// delete-subscription-configuration
+  "delete-subscription-configuration": async function() {
+    var data = await aspEvents.deleteSubscriptionConfiguration(argv.configurationid);
+    return outputResults(data);
+  },
+
+// create-subscription
+  "create-subscription": async function() {
+    var data = await aspEvents.createSubscription(argv.configurationid, argv.eventnamespace, argv.eventname, argv.parentid, argv.unitid, argv.skillid);
+    return outputResults(data);
+  },  
+
+// get-subscription
+  "get-subscription": async function() {
+    var data = await aspEvents.getSubscription(argv.subscriptionid);
+    return outputResults(data);
+  },
+// get-subscriptions
+  "get-subscriptions": async function() {
+    var data = await aspEvents.getSubscriptions(argv.unitid, argv.parentid, argv.eventnamespace, argv.eventname);
+    return outputResults(data);
+  },
+
+// delete-subscription
+  "delete-subscription": async function() {
+    var data = await aspEvents.deleteSubscription(argv.subscriptionid);
+    return outputResults(data);
+  },
+
 ///////// API Direct Call //////////////////////////
 
 "direct-api-call": async function() {
@@ -750,7 +799,12 @@ function preProcess(args) {
   }
 }
 
-function outputResults(data, outputParams = null) {
+export function outputResults(data, outputParams = null) {
+  
+  if (argv.directoutput) {
+    return data;
+  }
+  
   if (argv.output) {
 
     if (!outputParams)
