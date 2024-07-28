@@ -15,10 +15,10 @@ export async function useJSONCache() {
 
     let batchUnitIdsMax = 100;
 
-    let properyCache = arguments[1];
+    let propertyCache = arguments[1];
     let args = arguments[0];
 
-    let propertyBase = getUnitById(properyCache, args.propertyid);
+    let propertyBase = getUnitById(propertyCache, args.propertyid, 1, "level");
 
     if (! propertyBase || propertyBase.level < 1) 
     {

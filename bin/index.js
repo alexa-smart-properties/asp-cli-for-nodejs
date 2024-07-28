@@ -31,6 +31,7 @@ import * as aspDirect from '../utils/aspDirect.js';
 import * as aspWebRTC from '../utils/aspWebRTC.js';
 import * as aspPBX from '../utils/aspPBX.js';
 import * as aspEvents from '../utils/aspEvents.js';
+import * as aspReminders from '../utils/aspReminders.js';
 
 async function initSettings()
 {
@@ -77,42 +78,40 @@ export const actions = {
 
   "get-units": async function() {
     var data = await aspProperty.getUnits(argv.parentid, argv.depth);
-      outputResults(data);
-      return data;
+      return outputResults(data);
     },
   "get-units-from-cache": async function() {
       var data = getFileCache(argv);
-      outputResults(data);
+      return outputResults(data);
    },
    "get-unit": async function() {
-    var data = await  aspProperty.getUnit(argv.unitid);
-    outputResults(data);
-    return data;
+      var data = await  aspProperty.getUnit(argv.unitid);
+      return outputResults(data);
   },
   "get-unit-from-cache": async function() {
-    var data = getFileCache(argv);
-    outputResults(data);
+      var data = getFileCache(argv);
+      return outputResults(data);
  },
   "create-unit": async function() {
-    var data = await  aspProperty.createUnit(argv.parentid,argv.name);
-    outputResults(data);
+      var data = await  aspProperty.createUnit(argv.parentid,argv.name);
+      return outputResults(data);
   },
   "update-unit": async function() {
     var data = await  aspProperty.updateUnit(argv.unitid, argv.name);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-unit": async function() {
     var data = await  aspProperty.deleteUnit(argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   //EU only currently
   "get-consent-status": async function() {
     var data = await  aspProperty.getConsentStatus(argv.unitid, argv.consenttype);
-    outputResults(data);
+    return outputResults(data);
   },
   "reset-consent": async function() {
     var data = await  aspProperty.resetConsent(argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
 
 /////// Processes //////////////////////////
@@ -217,116 +216,132 @@ export const actions = {
 
   "create-communication-profile": async function() {
     var data = await aspCommunications.createCommunicationsProfile(argv.unitid, argv.profilename);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
 
   "update-communication-profile": async function() {
     var data = await aspCommunications.updateCommunicationsProfile(argv.profileid, argv.name);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
 
   "get-communication-profile": async function() {
     var data = await aspCommunications.getCommunicationProfile(argv.profileid, argv.unitid);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
 
   "delete-communication-profile": async function() {
     var data = await aspCommunications.deleteCommunicationProfile(argv.profileid);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
   "create-address-book": async function() {
     var data = await aspCommunications.createAddressBook(argv.name);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-address-books": async function() {
     var data = await aspCommunications.listAddressBooks();
-    outputResults(data);
+    return outputResults(data);
   },
+  "get-address-books-from-cache": async function() {
+      var data = getFileCache(argv);
+      return outputResults(data); 
+   },
   "get-address-book": async function() {
     var data = await aspCommunications.getAddressBook(argv.addressbookid);
-    outputResults(data);
+    return outputResults(data);
   },
+  "get-address-book-from-cache": async function() {
+      var data = getFileCache(argv);
+      return outputResults(data); 
+   },
   "update-address-book": async function() {
     var data = await aspCommunications.updateAddressBook(argv.addressbookid,argv.name);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-address-book": async function() {
     var data = await aspCommunications.deleteAddressBook(argv.addressbookid);
-    outputResults(data);
+    return outputResults(data);
   },
   "create-contact": async function() {
     var data = await aspCommunications.createContact(argv.addressbookid, argv.name, argv.phone, argv.profile, argv.webrtc);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-contacts": async function() {
     var data = await aspCommunications.listContacts(argv.addressbookid);
-    outputResults(data);
+    return outputResults(data);
   },
+  "get-contacts-from-cache": async function() {
+      var data = getFileCache(argv);
+      return outputResults(data); 
+   },
  
   "get-contact": async function() {
     var data = await aspCommunications.getContact(argv.addressbookid, argv.contactid);
-    outputResults(data);
+    return outputResults(data);
   },
+  "get-contact-from-cache": async function() {
+      var data = getFileCache(argv);
+      return outputResults(data); 
+   },
   "update-contact": async function() {
     var data = await aspCommunications.updateContact(argv.addressbookid, argv.contactid, argv.name, argv.phone, argv.profile, argv.webrtc);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-contact": async function() {
     var data = await aspCommunications.deleteContact(argv.contactid);
-    outputResults(data);
+    return outputResults(data);
   },
   "create-address-book-association": async function() {
     var data = await aspCommunications.createAddressBookAssociation(argv.addressbookid, argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   "create-bulk-address-book-associations": async function() {
     var data = await aspCommunications.createBulkAddressBookAssociations(argv.addressbookid, argv.unitids);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-address-book-associations": async function() {
     var data = await aspCommunications.listAddressBookAssociations(argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-address-book-association": async function() {
     var data = await aspCommunications.getAddressBookAssociation(argv.addressbookid,argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-address-book-association": async function() {
     var data = await aspCommunications.deleteAddressBookAssociation(argv.addressbookid, argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   "create-reciprocal-association": async function() {
     var data = await aspCommunications.createReciprocalAssociation(argv.profileid, argv.contactid);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-reciprocal-association-status": async function() {
     var data = await aspCommunications.getReciprocalAssociationStatus(argv.profileid, argv.contactid);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-reciprocal-association": async function() {
     var data = await aspCommunications.deleteReciprocalAssociation(argv.profileid, argv.contactid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-drop-in-preference": async function() {
     var data = await aspCommunications.setDropInPreference(argv.profileid, argv.targetprofileid, argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-drop-in-preference": async function() {
     var data = await aspCommunications.getDropInPreference(argv.profileId, argv.targetprofileid);
-    outputResults(data);
+    return outputResults(data);
   },
   "create-blocking-rule": async function() {
     var data = await aspCommunications.createBlockingRule(argv.profileId, argv.targetprofileid, argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-blocking-rule": async function() {
     var data = await aspCommunications.getBlockingRule(argv.profileid, argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
 
     ///////// WebRTC //////////////////////////
@@ -433,20 +448,19 @@ export const actions = {
   },
   "query-endpoints": async function() {
     var data = await aspEndpoints.queryEndpoints(argv.query, argv.expand);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-endpoints-from-cache": async function() {
     var data = getFileCache(argv);
-    outputResults(data);
+    return outputResults(data);
    },
   "get-endpoint": async function() {
     var data = await aspEndpoints.getEndpoint(argv.endpointid);
-    outputResults(data);
-    return data;
+    return outputResults(data);
   },
   "get-endpoint-from-cache": async function() {
     var data = getFileCache(argv);
-    outputResults(data);
+    return outputResults(data);
   },
   "update-endpoint-from-cache": async function() {
   var data = await updateFileCache(argv, null, argv.cache, argv.format);
@@ -561,21 +575,21 @@ export const actions = {
   },
 
 ///////// WiFi Settings /////////////////////////
-  //v
   "get-wifi-installation-status": async function() {
     var data = await aspWiFi.getWifiInstallationStatus(argv.endpointid, argv.operationid);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "set-wifi-configuration": async function() {
     var data = await aspWiFi.setWifiConfiguration(argv.endpointid, argv.ssid, argv.keymanagement, argv.priority);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "save-wifi-configurations": async function() {
     var data = await aspEndpoints.saveWifiConfigurations(argv.configurations,argv.host);
-    outputResults(data);
+    return outputResults(data);
   },
+
 
   ///////// Endpoint Settings /////////////////////////
 
@@ -655,9 +669,32 @@ export const actions = {
   },
   "set-timeformat": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"timeformat", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
-  
+
+  ///////// Endpoint Reminders //////////////////////
+
+  "get-reminders": async function() {
+    var data = await aspReminders.getReminders(argv.endpointid);
+    return outputResults(data);
+  },
+  "get-reminder": async function() {
+    var data = await aspReminders.getReminder(argv.reminderid);
+    return outputResults(data);
+  },
+  "create-reminder": async function() {
+    var data = await aspReminders.createReminder(argv.endpointids, argv.requesttime, argv.offsetinseconds, argv.scheduledtime, argv.startdatetime, argv.enddatetime, argv.recurrencerules, argv.timezoneid, argv.locale, argv.text, argv.ssml, argv.pushnotificationstatus);
+    return outputResults(data);
+  },
+  "update-reminder": async function() {
+    var data = await aspReminders.updateReminder(argv.reminderid, argv.endpointid, argv.requesttime, argv.offsetinseconds, argv.scheduledtime, argv.startdatetime, argv.enddatetime, argv.recurrencerules, argv.timezoneid, argv.locale, argv.text, argv.ssml, argv.pushnotificationstatus);
+    return outputResults(data);
+  },
+  "delete-reminder": async function() {
+    var data = await aspReminders.deleteReminder(argv.reminderid);
+    return outputResults(data);
+  },
+
   ///////// Notifications //////////////////////////
 
   "delete-all-notifications": async function() {
@@ -666,6 +703,7 @@ export const actions = {
   },
 
   "send-notification": async function() {
+
     var data = await aspNotifications.sendNotification(argv.unitids,argv.endpointids, argv.type, argv.text, argv.locale,argv.template, 
       argv.headertext, argv.primarytext, argv.secondarytext, argv.tertiarytext, argv.hinttext, argv.attributiontext, argv.ratingtext, argv.rating,
       argv.background,argv.thumbnail,argv.attributionimage, argv.coloroverlay, argv.dismissaltime, argv.dismissalhours, argv.dismissalminutes,
@@ -776,7 +814,7 @@ export const actions = {
 
 "direct-api-call": async function() {
   var data = await aspDirect.directApiCall(argv.config);
-  outputResults(data);
+  return outputResults(data);
 }
 
 };
@@ -801,10 +839,11 @@ function preProcess(args) {
 
 export function outputResults(data, outputParams = null) {
   
-  if (argv.directoutput) {
-    return data;
+  if (data.statuscode > 299 && argv.output !== 'statuscode')
+  {
+      console.log(JSON.stringify(data, null, 2));
+      return data;
   }
-  
   if (argv.output) {
 
     if (!outputParams)
@@ -817,9 +856,9 @@ export function outputResults(data, outputParams = null) {
     for (let param of outputParams) {
       
       if (param.includes('[]')) {
+        
         const key = param.substring(0, param.indexOf('['));
         value = value[key].map(item => {
-          //return outputResults(item,outputParams.slice(i - 2))}
           return item[outputParams[i + 1]]}
           ).join(',');
         break;
@@ -838,10 +877,11 @@ export function outputResults(data, outputParams = null) {
     if (typeof value === 'object') 
     {
       console.log(JSON.stringify(value, null, 2));
-      return;
+    } else {
+      console.log(value);
     }
-    console.log(value);
-          
+    return value;
+   
   } else {
       if (typeof data === 'object') 
       {
@@ -849,6 +889,8 @@ export function outputResults(data, outputParams = null) {
       }
       console.log(JSON.stringify(data, null, 2));
   }
+  return data;
+
 }
 
 async function postProcess(args, result) {

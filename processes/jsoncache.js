@@ -5,10 +5,14 @@
 import { getUnit} from '../utils/aspProperty.js';
 import { getEndpoints,getEndpointConnectivity} from '../utils/aspEndpoints.js';
 import { listSkillEnablements} from '../utils/aspSkills.js';
+import { getCommunicationProfile, getAddressBook, listContacts, listAddressBooks, getContact } from '../utils/aspCommunications.js';
 
-import { formatUnit, formatEndpoint, formatSkill, ensureUnitInCache, ensureEndpointInCache
+
+import { formatUnit, formatEndpoint, formatSkill, formatContact, ensureUnitInCache, ensureEndpointInCache
          ,getUnitById,getEndpointById,getEndpointsByUnitId,buildUnits,updateArrayByIds,updateArrayById,
-        getUnitsByName,getUnitsByContains,getUnitsByType, property} from './cacheHelpers.js';
+        getUnitsByName,getUnitsByContains,getUnitsByType, getAddressBookById, getContactById, property} from './cacheHelpers.js';
+
+export let isFromCacheAction = false;
 
 export async function updateJSONCache(args, result, json, format="compact") {
 
@@ -16,13 +20,26 @@ export async function updateJSONCache(args, result, json, format="compact") {
 
     case "get-units":
       await ensureUnitInCache(json, args.parentid, format);
-      var parentUnit = getUnitById(json, args.parentid);
+      var parentUnit = getUnitById(json, args.parentid, 1, "level"); 
       parentUnit["units"] = updateArrayByIds(result["results"], parentUnit["units"], format, formatUnit);
     break;
+    case "create-unit":
+      args.unitid = result.id;
+    case "update-unit":
+      result = await getUnit(args.unitid);
     case "get-unit":
       await ensureUnitInCache(json, args.unitid, format);
       var unit = getUnitById(json, args.unitid);
       Object.assign(unit, formatUnit( result, format));
+      break;
+    case "delete-unit":
+      //TODO: add remove unit from cache fn
+      // let unit = getUnitById(json, args.unitid);
+      // if (unit)
+      // {
+      //   let parent = getUnitById(json, unit.parentid);
+      // }
+      // Object.assign(unit, formatUnit( result, format));
       break;
     case "get-endpoints":
       let targetNode = null;
@@ -77,7 +94,12 @@ export async function updateJSONCache(args, result, json, format="compact") {
     case "get-endpoint-connectivity":
         await ensureEndpointInCache(json, args.endpointid, format);
         var endpoint = getEndpointById(json, args.endpointid);
-        endpoint.lastsampletime = new Date(result.properties[0].timeOfSample).toISOString();
+        if (result?.properties[0]?.timeOfSample) {
+          endpoint.lastsampletime = new Date(result.properties[0].timeOfSample).toISOString();
+        } else {
+          endpoint.connectivity = "UNKNOWN";
+          break;
+        }
         endpoint.connectivity = result.properties[0].value.value;
         if(endpoint.connectivity === "OK") {
           endpoint.lastconnected = endpoint.lastsampletime;
@@ -167,12 +189,51 @@ export async function updateJSONCache(args, result, json, format="compact") {
           return unit;
         });
       }
+
+      if (includes.includes("profiles")){    
+        json = await applyFuncUnitHierarchy(json, async (unit) => {
+
+          var result = await getCommunicationProfile(null,unit.id);
+          if (result["profileId"]) {
+            unit.profile = {}
+            unit.profile.id = result["profileId"].profileId;
+            unit.profile.name = result["name"];
+            console.log("Profile::" + result["name"] );
+          } else {
+            delete unit.profile;
+          } 
+          return unit;
+        });
+      }
+
+      if (includes.includes("addressbooks")){    
+        delete json.addressbooks;
+        let result = await listAddressBooks();
+        let addressbooks = [];
+        for (let item of result.results) {
+          let addressbook = {};
+          addressbook.id = item.addressBookId;
+          addressbook.name = item.name;
+          addressbook.contacts = [];
+          console.log("AddressBook::" + addressbook.name );
+          let contacts = await listContacts(item.addressBookId);
+          for (let item of contacts.results)
+          {
+            let contact = await getContact(addressbook.id, item.contactId);
+            console.log("Contact::" + contact.contact.name );
+            addressbook.contacts.push(formatContact(contact, format));
+          }
+          
+          addressbooks.push(addressbook);
+        }
+        json.addressbooks = addressbooks;
+      }
       
       var endTime = performance.now()
       console.log(`Caching took ${((endTime - startTime) /1000).toFixed(2) } seconds`)
       break;
     default:
-        console.log(`${args.action} is not available for caching`);
+      //  console.log(`${args.action} is not available for caching`);
       break;
   }
   
@@ -194,14 +255,13 @@ export function getJSONCache(args, json) {
 
   switch (args.action) {
     case "get-units-from-cache":
-
+      isFromCacheAction = true;
       var depth = 1;
       if (args.depth) {
         depth = parseInt(args.depth);
       }
       let unitsResult = {action: "get-units-from-cache", statuscode: 200};
       let parentUnit = null;
-
       if (args.contains) {
         parentUnit = {};
         parentUnit.units = getUnitsByContains({...json, name:"not set"}, args.contains,args.depth);
@@ -213,7 +273,22 @@ export function getJSONCache(args, json) {
         parentUnit.units = getUnitsByType({...json, name:"not set"}, args.type,args.depth);
       } else if (args.parentid)
       {
-        parentUnit = getUnitById(json, args.parentid,1 + depth);
+        parentUnit = getUnitById(json, args.parentid, 1 + depth, "level");
+      }
+
+      if (parentUnit && parentUnit.units) {
+        const flattenUnits = (units) => {
+          let flattenedUnits = [];
+          for (let unit of units) {
+            flattenedUnits.push(unit);
+            if (unit.units) {
+              flattenedUnits = flattenedUnits.concat(flattenUnits(unit.units));
+            }
+          }
+          return flattenedUnits;
+        };
+
+        parentUnit.units = flattenUnits(parentUnit.units);
       }
 
       if (parentUnit) {
@@ -229,6 +304,7 @@ export function getJSONCache(args, json) {
       return unitsResult;
 
     case "get-unit-from-cache":
+      isFromCacheAction = true;
       let result = {action: "get-unit-from-cache", statuscode: 200};
       var depth = 0;
       if (args.depth) {
@@ -244,6 +320,7 @@ export function getJSONCache(args, json) {
       return json;
 
     case "get-endpoints-from-cache":
+      isFromCacheAction = true;
       let endpoints = json.endpoints;
       if (args.unitid) {
         endpoints = getEndpointsByUnitId(json, args.unitid, args.manufacturer);
@@ -252,7 +329,7 @@ export function getJSONCache(args, json) {
       return json;
 
     case "get-endpoint-from-cache":
-      
+        isFromCacheAction = true;
         let endpointResult = {action: "get-endpoint-from-cache", statuscode: 200};
         var endpoint = getEndpointById(json, args.endpointid, args.serial);
         if (endpoint) {
@@ -263,6 +340,55 @@ export function getJSONCache(args, json) {
         }
         return json;
 
+    case "get-address-books-from-cache": 
+        isFromCacheAction = true;
+        let addressBooksResult = {action: "get-address-books-from-cache", statuscode: 200,"addressbooks": []};
+        var addressbooks = json.addressbooks;
+          if (addressbooks) {
+            let justBooks = addressbooks.map((item) => { return {id: item.id, name: item.name};} );
+            json = {...addressBooksResult, "addressbooks": justBooks};
+          } else
+          {
+            json = {"addressbooks": [], statuscode: 404, message: "Address Books not found"};
+          }
+          return json;
+    case "get-address-book-from-cache": 
+        isFromCacheAction = true;
+        let addressbookResult = {action: "get-address-book-from-cache", statuscode: 200};
+        var addressbook = getAddressBookById(json, args.id, args.name);
+        if (addressbook.length > 0) {
+          json = {...addressbookResult, ...addressbook[0]};
+        } else {
+          json = {...addressbookResult, statuscode: 404, message: "Address Book not found"};
+        }
+      return json;
+    case "get-contacts-from-cache": 
+        isFromCacheAction = true;
+        let contactsResult = {action: "get-contacts-from-cache", statuscode: 200};
+        var addressbook = getAddressBookById(json, args.addressbookid, args.addressbookname);
+        if (addressbook.length > 0) {
+          json = {...contactsResult, ...addressbook[0].contacts};
+        } else {
+          json = {...contactsResult, statuscode: 404, message: "Address Book not found"};
+        }
+      return json;
+    case "get-contact-from-cache":
+      isFromCacheAction = true;
+       let contactResult = {action: "get-contact-from-cache", statuscode: 200};
+        var addressbook = getAddressBookById(json, args.addressbookid, args.addressbookname);
+        if (addressbook.length > 0) {
+          let contact = getContactById(addressbook[0], args.id, args.name, args.profileid);
+          console.log(contact);
+          if (contact.length > 0) {
+            json = {...contactResult, ...contact[0]};
+          } else
+          {
+            json = {statuscode: 404, message: "Contact not found"};
+          }
+        } else {
+          json = {...contactResult, statuscode: 404, message: "Address Book not found"};
+        }
+      return json;
     default:
       throw new Error(`${args.action} is not available for caching`);
   }

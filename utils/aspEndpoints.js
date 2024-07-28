@@ -4,8 +4,7 @@
 
 "use strict";
 
-import axios from 'axios';
-import {getAPIResponse,getAPICombinedResults,apiSettings} from './asp-api-helpers.js';
+import {getAPIResponse,getAPICombinedResults} from './asp-api-helpers.js';
 
 function translateKeys(keys, lookup) {
   return keys.split(',').map(key => lookup[key.toLowerCase()] || key).join(',');

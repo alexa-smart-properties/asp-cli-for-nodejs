@@ -3,7 +3,7 @@
 // Licensed under the Amazon Software License  http://aws.amazon.com/asl/
 import fs from 'fs';
 
-import { updateJSONCache, getJSONCache } from './jsoncache.js';
+import { updateJSONCache, getJSONCache, isFromCacheAction } from './jsoncache.js';
 import { useJSONCache } from './batchProperty.js';
 
 export async function useFileCache() {
@@ -27,6 +27,12 @@ export async function useFileCache() {
 
 
  export async function updateFileCache(args, result, file, format) {
+    
+    if (isFromCacheAction)
+    {
+        return;
+    }
+
     try 
     {
         if (!fs.existsSync(file)) {
@@ -52,6 +58,7 @@ export async function useFileCache() {
     }
 
     jsonData = await updateJSONCache(args, result, jsonData, format);
+    jsonData.updated = new Date().toISOString();
     fs.writeFileSync(file, JSON.stringify(jsonData), 'utf8');
 
 }

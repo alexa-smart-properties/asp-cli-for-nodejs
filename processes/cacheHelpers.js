@@ -93,18 +93,45 @@ export function formatSkill(skill, format) {
   }
 }
 
-export function getUnitById(obj, id, depth) {
+export function formatContact(contact, format) {
+  
+  switch (format) {
+    case "ids-only":
+    case "compact":
+            let formattedContact = {"id": contact.contactId}
+            if (format === "compact") 
+            {
+              formattedContact = {...formattedContact, 
+                    "name": contact.contact.name 
+                  };
+              if (contact.contact.alexaCommunicationProfileId) {
+                  formattedContact.profileid = contact.contact.alexaCommunicationProfileId;
+              }
+              if (contact.contact.phoneNumbers) {
+                formattedContact.phonenumbers = contact.contact.phoneNumbers.map(item => item.number);
+              }
+              //add webrtc id
+            }
+            return formattedContact;
+      break;
+    default:
+      return contact
+      break;
+  }
+}
 
-  if (obj.id === id) {
+export function getUnitById(obj, id, depth, type) {
+
+  if (obj.id === id && (!type || obj.type === type)) {
+
     if (depth !== null) {trimUnitsByDepth(obj, depth);}
     return obj;
   } else if (obj.units) {
     for(let i = 0; i < obj.units.length; i++) {
-      let result = getUnitById(obj.units[i], id, depth);
+      let result = getUnitById(obj.units[i], id, depth, type);
       if (result != null) {
         return result;
       }
-
     }
   }
   return null;
@@ -212,6 +239,49 @@ export function getEndpointsByUnitId(obj, unitid, manufacturer) {
   return null;
 }
 
+export function getAddressBookById(obj, id, name) {
+  let result = null;
+  if (obj["addressbooks"]) {
+    if (id ) {
+      return obj["addressbooks"].filter(item => item.id === id);
+    }
+    if (name) {
+      return obj["addressbooks"].filter(item => item.name === name);
+    }
+    if (result != null) {
+      
+      return result;
+    }
+  }
+  return null;
+}
+
+export function getContactById(addressbook, id, name, profileid) {
+  let result = null;
+  let contacts = addressbook.contacts;
+  console.log(name);
+  if (contacts) {
+    
+    if (id) {
+      
+      return contacts.filter(item => item.id === id);
+    }
+    if (name) {
+      returncontacts.filter(item => item.name === name);
+      return
+    }
+    if (profileid) {
+      return contacts.filter(item => item.profileid === profileid);
+    }
+    if (result != null) {
+      
+      return result;
+    }
+  }
+  return null;
+}
+
+
 export function property(object, prop) {
   return {
       get value () {
@@ -296,20 +366,21 @@ export async function ensureEndpointInCache(json, endpointid, format) {
 
 export function updateArrayByIds(sourceArray, targetArray=[], format, formatFunction) {
 
-  console.log("updateArrayByIds::format::" + format);
   let resultIds = sourceArray.map(item => item.id);
   let cacheIds = targetArray.map(item => item.id);
   let removedIds = cacheIds.filter(id => !resultIds.includes(id));
+  //let addedItems = sourceArray.filter(item => !targetArray.some(targetItem => targetItem.id === item.id));
 
   for (let item of sourceArray) { 
     let entity = formatFunction(item, format); 
-    if (!targetArray.find(item => item.id === item.id)) {
+
+    if (!targetArray.find(item_t => item_t.id === item.id)) {
       targetArray.push(entity);
-    } else
-    {
-      targetArray = targetArray.map(destItem => destItem.id === entity.id ? {...destItem, ...entity} : entity);
+    } else {
+      targetArray = targetArray.map(destItem => destItem.id === entity.id ? {...destItem, ...entity} : destItem);
     }
   }
+  
   return targetArray.filter(item => !removedIds.includes(item.id));
 }
 

@@ -7,6 +7,8 @@
 import {getAPIResponse,getAPICombinedResults} from './asp-api-helpers.js';
 
 /// Property Management  /////////////////////////////////////////////////
+
+//get-units
 export async function getUnits(parentId, depth = 1) {
 
   let expanded = true;
@@ -19,6 +21,7 @@ export async function getUnits(parentId, depth = 1) {
   return data;
 }   
 
+//get-unit
 export async function getUnit(unitId) {
 
   let config = {
@@ -31,6 +34,7 @@ export async function getUnit(unitId) {
 
 } 
 
+//delete-unit
 export async function deleteUnit(unitId) {
   let config = {
     method: 'delete',
@@ -42,6 +46,7 @@ export async function deleteUnit(unitId) {
 
 }   
 
+//create-unit
 export async function createUnit(parentId, unitName, unitType = "PLAIN") {
 
     let postData = JSON.stringify({
