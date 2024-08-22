@@ -37,7 +37,6 @@ foreach($endpoint in $json_available_endpoints.results)
 # $json = asp-cli create-unit --parentid $orgid --name $newproperty | Out-String | ConvertFrom-Json
 # $newpropertyid= $json.id
 # echo $newpropertyid
-# asp-cli enable-skill-for-unit --unitid $newpropertyid --skillid "amzn1.ask.skill.2f3c39f9-740b-4204-b4af-ba9e70ca0cd8" --stage "live"
 
 $newpropertyid = $json_properties.results.Where({$_.name.value.text -eq $newproperty}).id
 echo $newpropertyid
