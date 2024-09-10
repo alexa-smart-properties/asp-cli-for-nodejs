@@ -18,7 +18,7 @@ export async function useJSONCache() {
     let propertyCache = arguments[1];
     let args = arguments[0];
 
-    let propertyBase = getUnitById(propertyCache, args.propertyid, 1, "level");
+    let propertyBase = getUnitById(propertyCache, args.propertyid, null, "level");
 
     if (! propertyBase || propertyBase.level < 1) 
     {
@@ -66,7 +66,7 @@ export async function useJSONCache() {
             console.log(`{"apply":"${args.apply}", "results":[`);
             while (unitids.length > 0) {
                 let batchUnitIds = unitids.splice(0, batchUnitIdsMax);
-                var data = await aspNotifications.deleteAllNotifications(batchUnitIds.join(","), args.type);
+                var data = await aspNotifications.deleteAllNotifications(batchUnitIds.join(","),null, args.type);
                 var output = {statuscode: data.statuscode, unitids: batchUnitIds};
                 console.log(JSON.stringify(output, null, 2) + ",");
             }

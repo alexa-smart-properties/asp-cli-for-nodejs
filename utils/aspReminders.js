@@ -8,7 +8,7 @@ import {getAPIResponse,getAPICombinedResults, getBatchResults} from './asp-api-h
 
 
 // create-reminder
-export async function createReminder(endpointids, requestTime, offsetInSeconds, scheduledTime, startDateTime, endDateTime, recurrenceRules, timeZoneId = null, locale = "en-US", text, ssml = null, pushNotificationStatus) {
+export async function createReminder(endpointids, requestTime, offsetInSeconds, scheduledTime, startDateTime, endDateTime, recurrenceRules, timeZoneId = null, locale = "en-US", text, ssml = null) {
     
     let recipients = endpointids.split(',').map(key => {return {"type": "Endpoint","id": key}});
 
@@ -99,7 +99,7 @@ export async function getReminders(endpointId) {
 }
 
 // update-reminder
-export async function updateReminder(reminderId, endpointid, requestTime, offsetInSeconds, scheduledTime, startDateTime, endDateTime, recurrenceRules, timeZoneId = null, locale = "en-US", text, ssml = null, pushNotificationStatus) {
+export async function updateReminder(reminderId, endpointid, requestTime, offsetInSeconds, scheduledTime, startDateTime, endDateTime, recurrenceRules, timeZoneId = null, locale = "en-US", text, ssml = null) {
     
     let recipient = {"type": "Endpoint","id": endpointid};
 

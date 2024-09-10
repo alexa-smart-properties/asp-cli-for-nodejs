@@ -13,12 +13,17 @@ function translateKeys(keys, lookup) {
 }
 
 //delete-all-notifications
-export async function deleteAllNotifications(unitids, type = "DeviceNotification") {
-  let recipients = unitids.split(',').map(recipient => new Object({
-      "type": "Unit",
-      "id": recipient
-    })
-  );
+export async function deleteAllNotifications(unitids, endpointids, type = "DeviceNotification") {
+  
+  let ids = [];
+  let recipientType = "Unit";
+
+  if (unitids) {
+    ids = unitids.split(',');
+  } else if (endpointids) {
+    ids = endpointids.split(',');
+    recipientType = "Endpoint";
+  }
 
   const config = {
     method: 'post',
@@ -27,15 +32,51 @@ export async function deleteAllNotifications(unitids, type = "DeviceNotification
       'Accept': 'application/json'
     },
     data: {
-      recipients: recipients,
       notificationTypes: type.split(',')
     }
   };
 
-  const data = await getAPIResponse(config);
+  const data = await getBatchResults(config, {type: recipientType}, undefined, ids, "recipients")
 
   return data;
 }
+
+
+// query-persistent-visual-alerts
+export async function queryNotifications(unitids, endpointids, notificationType = "PersistentVisualAlert") {
+
+  let ands = [];
+
+  if (unitids) {
+    unitids = unitids.split(',');
+    ands.push({"or": unitids.map(unitid => ({"match": { "recipients.id": unitid}}))});
+    ands.push({"match": {"recipients.type": "Unit"}});
+  }
+  else if (endpointids) {
+    endpointids = endpointids.split(',');
+    ands.push({"or": endpointids.map(unitid => ({"match": { "recipients.id": endpointids}}))});
+    ands.push({"match": {"recipients.type": "Endpoint"}});
+  }
+
+  ands.push ({"match": {"notification.variants.type": notificationType}});
+
+  let query = { and: ands};
+
+  const config = {
+    method: 'post',
+    url: '/v3/notifications/query',
+    headers: {
+      'Accept': 'application/json'
+    },
+    data: {query: query}
+  };
+
+  config.data.paginationContext = {"maxResults": 100};
+
+  const data = await getAPIResponse(config);
+  return data;
+}
+
 
 //send-notification
 export async function sendNotification(unitids, endpointids, type="DeviceNotification", text, locale ="en-US", template="wrapping", 

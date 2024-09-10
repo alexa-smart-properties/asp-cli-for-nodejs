@@ -131,7 +131,6 @@ export async function getEndpointConnectivity(endpointId) {
     method: 'get',
     url: `/v2/endpoints/${endpointId}/features/connectivity`
   };
-
   const data = await getAPIResponse(config);
   return data;
 }

@@ -107,7 +107,7 @@ export async function getAPICombinedResults(config,arrayName="results") {
   return combinedData;
 }
 
-export async function getBatchResults(config, itemtemplate, idName, ids, arrayName="items") {
+export async function getBatchResults(config, itemtemplate, idName="id", ids, arrayName="items") {
   
   let combinedData = null;
 

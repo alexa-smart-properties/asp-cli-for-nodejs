@@ -52,7 +52,6 @@ export async function refreshAccessToken()
       }
     })
     .catch((error) => {
-      //console.log(error);
       console.log("Error refreshing token. Please check your configuration.");
     });
 }

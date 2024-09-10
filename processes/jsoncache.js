@@ -16,6 +16,7 @@ export let isFromCacheAction = false;
 
 export async function updateJSONCache(args, result, json, format="compact") {
 
+  isFromCacheAction = false;
   switch (args.action) {
 
     case "get-units":
@@ -156,13 +157,17 @@ export async function updateJSONCache(args, result, json, format="compact") {
                 var result = await getEndpointConnectivity(endpoint.id);
                 if (result.properties)
                 { 
-                  let date = new Date(result.properties[0].timeOfSample);
+
                   var endpointUpdate = {};
-                  endpointUpdate.lastsampletime = new Date(result.properties[0].timeOfSample).toISOString();
-                  endpointUpdate.connectivity = result.properties[0].value.value;
-                  if(endpointUpdate.connectivity === "OK") {
-                    endpointUpdate.lastconnected = endpointUpdate.lastsampletime;
+                  if (result.properties[0].value) {
+                    let date = new Date(result.properties[0].timeOfSample);
+                    endpointUpdate.lastsampletime = date.toISOString();
+                    endpointUpdate.connectivity = result.properties[0].value.value;
+                    if(endpointUpdate.connectivity === "OK") {
+                      endpointUpdate.lastconnected = endpointUpdate.lastsampletime;
+                    }
                   }
+                  
                   console.log("Connectivity::" + endpoint.id + "::" + endpointUpdate.connectivity );
                 }
                 return {...endpoint, ...endpointUpdate};
@@ -378,7 +383,6 @@ export function getJSONCache(args, json) {
         var addressbook = getAddressBookById(json, args.addressbookid, args.addressbookname);
         if (addressbook.length > 0) {
           let contact = getContactById(addressbook[0], args.id, args.name, args.profileid);
-          console.log(contact);
           if (contact.length > 0) {
             json = {...contactResult, ...contact[0]};
           } else

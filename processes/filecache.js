@@ -45,7 +45,9 @@ export async function useFileCache() {
 
     let fileData = fs.readFileSync(file, 'utf8');
     let jsonData = JSON.parse(fileData);
-
+    jsonData.updated = new Date().toISOString();
+    fs.writeFileSync(file, JSON.stringify(jsonData), 'utf8');
+    
     if (jsonData.format) {
         if (format && jsonData.format !== format) {
            throw new Error(`Format mismatch: Cache format previously set to ${jsonData.format}`); 
@@ -70,6 +72,18 @@ export function getFileCache(args) {
     if (fs.existsSync(file)) {  
         const data = fs.readFileSync(file, 'utf8');
         return getJSONCache(args,JSON.parse(data));
+    }
+    
+    throw new Error(`Error creating cache file: ${file}. Verify the --cache parameter is correct and the file exists.`);
+}
+
+export function getPropertyJSON(args) {
+
+    let file = args.cache;
+
+    if (fs.existsSync(file)) {  
+        const data = fs.readFileSync(file, 'utf8');
+        return JSON.parse(data);
     }
     
     throw new Error(`Error creating cache file: ${file}. Verify the --cache parameter is correct and the file exists.`);

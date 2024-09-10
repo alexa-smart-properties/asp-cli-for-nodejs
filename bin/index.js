@@ -118,51 +118,52 @@ export const actions = {
 "create-property": async function() {
   //longer api call delay required for createProperty
   var data = await createProperty(argv.orgid, argv.name, argv.type);
-  outputResults(data);
+  return outputResults(data);
 },
 
-"update-property": async function() {
-  var data = await useFileCache(...arguments);
-},
+// "update-property": async function() {
+//   var data = await useFileCache(...arguments);
+// },
 
 
 /////// Cache actions //////////////////////////
 
   "update-cache": async function() {
     var data = await updateFileCache(argv, null, argv.cache, argv.format);
-    console.log(JSON.stringify({export:"completed","statuscode":200}, null, 2));
+    return data;
   },
 
   "update-property-from-cache": async function() {
     var data = await useFileCache(...arguments);
+    return data;
   },
 
   ///////// Unit Settings //////////////////////////
 
   "get-default-music-station": async function() {
     var data = await aspUnitSettings.getDefaultMusicStation(argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-default-music-station": async function() {
     var data = await aspUnitSettings.setDefaultMusicStation(argv.unitid, argv.providerid, argv.stationid);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-all-reminders": async function() {
     var data = await aspUnitSettings.deleteAllReminders(argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-all-alarms": async function() {
     var data = await aspUnitSettings.deleteAllAlarms(argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
   "delete-all-timers": async function() {
     var data = await aspUnitSettings.deleteAllTimers(argv.unitid);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "set-menu-icon": async function() {
     var data = await aspUnitSettings.setMenuIcon(argv.unitid, argv.icon, argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
 
 
@@ -698,7 +699,7 @@ export const actions = {
   ///////// Notifications //////////////////////////
 
   "delete-all-notifications": async function() {
-    var data = await aspNotifications.deleteAllNotifications(argv.unitids, argv.type);
+    var data = await aspNotifications.deleteAllNotifications(argv.unitids, argv.endpointids, argv.type);
     outputResults(data);
   },
 
@@ -709,6 +710,11 @@ export const actions = {
       argv.background,argv.thumbnail,argv.attributionimage, argv.coloroverlay, argv.dismissaltime, argv.dismissalhours, argv.dismissalminutes,
      /*PVA 2.0*/ argv.starttime, argv.indicatorsound, argv.interruptionlevel, argv.restrictactions, argv.optionlistdata);
     return outputResults(data);
+  },
+
+  "query-notifications": async function() {
+    var data = await aspNotifications.queryNotifications(argv.unitids, argv.endpointids, argv.notificationType);
+    outputResults(data);
   },
 
   ///////// Users //////////////////////////

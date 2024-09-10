@@ -259,16 +259,14 @@ export function getAddressBookById(obj, id, name) {
 export function getContactById(addressbook, id, name, profileid) {
   let result = null;
   let contacts = addressbook.contacts;
-  console.log(name);
+
   if (contacts) {
     
-    if (id) {
-      
+    if (id) { 
       return contacts.filter(item => item.id === id);
     }
     if (name) {
-      returncontacts.filter(item => item.name === name);
-      return
+      return contacts.filter(item => item.name === name);
     }
     if (profileid) {
       return contacts.filter(item => item.profileid === profileid);

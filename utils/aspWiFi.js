@@ -38,11 +38,11 @@ export async function saveWifiConfigurations(wifiConfigurations, host="credentia
   return data;
 }
 
-export async function setWifiConfiguration(endpointId, ssid, keyManagement, priority ) {
+export async function setWifiConfiguration(endpointid, ssid, keyManagement, priority ) {
   
   const config = {
     method: 'post',
-    url: `/v2/endpoints/${endpointId}/features/connectivity/addOrUpdateWifiConfigurations`,
+    url: `/v2/endpoints/${endpointid}/features/connectivity/addOrUpdateWifiConfigurations`,
       data: {
         "payload": {
           "wifiConfigurations": [{
