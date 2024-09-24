@@ -57,7 +57,36 @@ export async function setWifiConfiguration(endpointid, ssid, keyManagement, prio
     config.data.payload.wifiConfigurations[0].priority = Number.parseInt(priority);
   }
 
-  //console.log(config.data.payload);
+  const data = await getAPIResponse(config);
+  return data;
+}
+
+//forget-wifi-configurations
+export async function forgetWifiConfigurations(endpointId, ssid, keyManagement) {
+  const config = {
+    method: 'post',
+    url: `/v2/endpoints/${endpointId}/features/connectivity/forgetWifiConfigurations`,
+    data: {
+      "payload": {
+        "wifiConfigurations": [{
+          "ssid": ssid,
+          "keyManagement": keyManagement
+        }]
+      }
+    }
+  };
+
+  const data = await getAPIResponse(config);
+  return data;
+}
+
+//get-wifi-configurations
+export async function getWifiConfigurations(endpointId) {
+  const config = {
+    method: 'get',
+    url: `/v2/endpoints/${endpointId}/features/connectivity/wifiConfigurations`,
+  };
+
   const data = await getAPIResponse(config);
   return data;
 }

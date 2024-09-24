@@ -135,21 +135,36 @@ Note: unitId needs to be retrieved from `asp-cli` or API call.
 - `asp-cli delete-all-notifications --unitids [--type]`
   - This command deletes all notifications. You need to provide the unit IDs as arguments. The type defaults to type options are `DeviceNotification`,`PersistentVisualAlert`.
 
-- `asp-cli send-notification --unitids --type --text --locale [--template] [--headertext] [--primarytext] [--secondarytext] [--tertiarytext] [--hinttext] [--attributiontext] [--ratingtext] [--rating] [--background] [--thumbnail] [--attributionimage] [--coloroverlay] [--dismissaltime]`
+- `asp-cli send-notification --unitids [--endpointids] --type --text --locale [--template] [--headertext] [--primarytext] [--secondarytext] [--tertiarytext] [--hinttext] [--attributiontext] [--ratingtext] [--rating] [--background] [--thumbnail] [--attributionimage] [--coloroverlay] [--dismissaltime] [--dismissalhours] [--dismissalminutes] [--starttime [--indicatorsound] [--interruptionlevel] [--restrictactions] [--optionlistdata]`
   - This command sends a notification. You need to provide the unit IDs, type, text, and locale as arguments. The notification types are notification,announcement,alert.
 
+- `query-notifications --unitids --endpointids --notificationType`
+  - Queries notifications for the specified unit IDs, endpoint IDs, and notification type. Either unit IDs or endpoint ids should be set but not both.
+
+### Campaigns
+
+- `create-campaign --type --unitids --start --end --locale --headertext --primarytext --secondarytext --tertiarytext --attributiontext --hinttext --calltoactionbuttontext --playbackenabled --ratingtext --ratingnumber --backgroundimage --attributionimage --thumbnailimage --actiontype --actionuri --actioninput --listhinttexts --listthumbnailimages`
+  - Creates and deploys a new campaign card for a list of unit IDs. Unit IDs should be in the form --unitids "id1,id2,id3".
+- `get-campaigns`
+  - Retrieves a list of all campaigns.
+- `query-campaigns --query`
+  - Queries campaigns based on the specified search criteria.
+- `get-campaign --campaignid`
+  - Retrieves the details of a specific campaign by its ID.
+- `delete-campaign --campaignid`
+  - Deletes the campaign with the specified ID.
 
 ### Communications
 
-- `asp-cli create-comms-profile --unitid --profilename`
+- `asp-cli create-communication-profile --unitid --profilename`
   - Create a communication profile for a unit. You need to provide unit ID and profile name. It enables the communication capability and creates a profileId for a unit.
-- `asp-cli update-comms-profile --profileid --profilename`
+- `asp-cli update-communication-profile --profileid --profilename`
   - Update a communication profile. 
-- `asp-cli get-comms-profile --profileid`
+- `asp-cli get-communication-profile --profileid`
   - Get a communication profile by profile ID.
-- `asp-cli get-comms-profile-by-entity --entityid`
+- `asp-cli get-communication-profile-by-entity --entityid`
   - Get a coommunnication profile by entity ID.
-- `asp-cli delete-comms-profile --profileid`
+- `asp-cli delete-communication-profile --profileid`
   - Delete a communication profile.
 - `asp-cli create-address-book --name`
   - Create address book.
@@ -159,7 +174,7 @@ Note: unitId needs to be retrieved from `asp-cli` or API call.
   - Get address book by address book ID.
 - `asp-cli create-contact --addressbookid --name --phone`
   - Create contact to an address book. 
-- `asp-cli list-contacts --addressbookid`
+- `asp-cli get-contacts --addressbookid`
   - List contacts under an address book.
 - `asp-cli get-contact --contactid`
   - Get contact by contact ID.
@@ -257,7 +272,64 @@ Note: unitId needs to be retrieved from `asp-cli` or API call.
   - Update the clock time-format setting for the specified endpoint. You need to provide endpoint ID and value(12_HOURS/24_HOURS)
   
   
+### WiFi Settings
 
+- `get-wifi-installation-status --endpointid --operationid`
+  - Retrieves the status of the WiFi installation for a given endpoint ID and operation ID.
+- `set-wifi-configuration --endpointid --ssid --keymanagement --priority`
+  - Sets the WiFi configuration for a given endpoint ID, SSID, key management, and priority.
+- `save-wifi-configurations --configurations --host`
+  - Saves the WiFi configurations for the given configurations and host.
+- `forget-wifi-configurations --endpointid --ssid --keymanagement`
+  - Forgets the WiFi configurations for the given endpoint ID, SSID, and key management.
+- `get-wifi-configurations --endpointid`
+  - Retrieves the WiFi configurations for the given endpoint ID.
+
+### Reminders
+
+- `get-reminders --endpointid`
+  - This command retrieves all reminders for the specified endpoint ID.
+- `get-reminder --reminderid`
+  - Get a specific reminder. You need to provide the reminder ID.
+- `create-reminder --endpointids --requesttime --offsetinseconds --scheduledtime --startdatetime --enddatetime --recurrencerules --timezoneid --locale --text --ssml`
+  - Creates a new reminder. You need to provide the endpoint IDs as a comma separaged list such as "id1,id2,id3", timezone ID, locale, text, and/or SSML. Depending on the reminder's time configuration you will need to request time, offset in seconds, scheduled time, start datetime, end datetime, recurrence rules.
+- `update-reminder --reminderid --endpointid --requesttime --offsetinseconds --scheduledtime --startdatetime --enddatetime --recurrencerules --timezoneid --locale --text --ssml`
+  - Updates an existing reminder. You need to provide the reminder ID, endpoint ID, request time, offset in seconds, scheduled time, start datetime, end datetime, recurrence rules, timezone ID, locale, text, and SSML.
+- `delete-reminder --reminderid`
+  - Deletes a specific reminder. You need to provide the reminder ID.
+
+### SNS Events
+
+- `create-subscription-configuration --type --channelids`
+  - Creates a new subscription configuration with the specified type and channel IDs.
+- `get-subscription-configuration --configurationid`
+  - Retrieves the subscription configuration with the specified ID.
+- `get-subscription-configurations`
+  - Retrieves a list of all subscription configurations.
+- `delete-subscription-configuration --configurationid`
+  - Deletes the subscription configuration with the specified ID.
+- `create-subscription --configurationid --eventnamespace --eventname --parentid --unitid --skillid`
+  - Creates a new subscription with the specified configuration ID, event namespace, event name, parent ID, unit ID, and skill ID.
+- `get-subscription --subscriptionid`
+  - Retrieves the subscription with the specified ID.
+- `get-subscriptions --unitid --parentid --eventnamespace --eventname`
+  - Retrieves a list of subscriptions based on the specified unit ID, parent ID, event namespace, and event name.
+- `delete-subscription --subscriptionid`
+  - Deletes the subscription with the specified ID.
+
+### API Direct Call
+
+- `direct-api-call --config`
+  - Executes a direct API call using the specified axios configuration. Can be used with the results of --includeapicall to replay an action.
+
+  ### Users
+
+- `create-user --orgid`
+  - Creates a new user for the specified organization ID. This is a user for the Smart Properties account as it not related to addressbook contacts.
+- `get-users --orgid`
+  - Retrieves a list of users for the specified organization ID.
+- `delete-user --userid`
+  - Deletes the user with the specified user ID.
 
 ## Security
 

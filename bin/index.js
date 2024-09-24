@@ -171,46 +171,41 @@ export const actions = {
 
   "get-skill-enablement": async function() {
     var data = await aspSkills.getSkillEnablement(argv.unitid, argv.skillid);
-    outputResults(data);
-    return data;
+    return outputResults(data);
   },
   "get-skill-enablements": async function() {
     var data = await aspSkills.listSkillEnablements(argv.unitid);
-    outputResults(data);
-    return data;
+    return outputResults(data);
   },
   "get-skill-enablement-multiple-units": async function() {
     var data = await aspSkills.getSkillEnablementForMultipleUnits(argv.unitids);
-    outputResults(data);
-    return data;
+    return outputResults(data);
   },
   "enable-skill-for-unit": async function() {
     var data = await aspSkills.enableSkillForUnit(argv.skillid,argv.unitid,argv.stage ,argv.partition, argv.linkredirecturi,argv.linkauthcode, argv.nfilocales);
-    outputResults(data);
+    return outputResults(data);
   },
   "enable-skill-multiple-units": async function() {
     var data = await aspSkills.enableSkillForMultipleUnits(argv.skillid,argv.unitids,argv.stage ,argv.partition, argv.linkredirecturi,argv.linkauthcode, argv.nfilocales);
-    outputResults(data);
+    return outputResults(data);
   },
   "disable-skill-for-unit": async function() {
     var data = await aspSkills.disableSkillForUnit(argv.unitid, argv.skillid, argv.stage);
-    outputResults(data);
+    return outputResults(data);
   },
   "disable-skill-multiple-units": async function() {
     var data = await aspSkills.disableSkillForMultipleUnits(argv.skillid, argv.unitids, argv.stage);
-    outputResults(data);
+    return outputResults(data);
   },
 
   ///////// Endpoint discovery sessions //////////////
   "create-discovery-session": async function() {
     var data = await aspDiscovery.createDiscoverySession(argv.unitid, argv.skillid, argv.stage, argv.type);
-    outputResults(data);
-    return data;
+    return outputResults(data);
   },
   "get-discovery-session-status": async function() {
     var data = await aspDiscovery.getDiscoverySessionStatus(argv.sessionid);
-    outputResults(data);
-    return data;
+    return outputResults(data);
   },
 
   ///////// Communications //////////////////////////
@@ -348,56 +343,56 @@ export const actions = {
     ///////// WebRTC //////////////////////////
     "create-service-provider": async function() {
       var data = await aspWebRTC.createServiceProvider(argv.logicalid, argv.displaynames, argv.locales);
-      outputResults(data);
+      return outputResults(data);
     },
     "get-service-provider": async function() {
       var data = await aspWebRTC.getServiceProvider(argv.providerid);
-      outputResults(data);
+      return outputResults(data);
     },
     "update-service-provider": async function() {
       var data = await aspWebRTC.updateServiceProvider(argv.providerid, argv.displaynames, argv.locales);
-      outputResults(data);
+      return outputResults(data);
     },
     "delete-service-provider": async function() {
       var data = await aspWebRTC.deleteServiceProvider(argv.providerid);
-      outputResults(data);
+      return outputResults(data);
     },
   
     "create-network-mapping": async function() {
       var data = await aspWebRTC.createNetworkMapping(argv.providerid,argv.skillid, argv.networktype);
-      outputResults(data);
+      return outputResults(data);
     },
     "get-network-mapping": async function() {
       var data = await aspWebRTC.getNetworkMapping(argv.providerid);
-      outputResults(data);
+      return outputResults(data);
     },
     "update-network-mapping": async function() {
       var data = await aspWebRTC.updateNetworkMapping(argv.providerid,argv.skillid, argv.networktype);
-      outputResults(data);
+      return outputResults(data);
     },
     "delete-network-mapping": async function() {
       var data = await aspWebRTC.deleteNetworkMapping(argv.providerid);
-      outputResults(data);
+      return outputResults(data);
     },
 
     "create-account-association": async function() {
       var data = await aspWebRTC.createAccountAssociation();
-      outputResults(data);
+      return outputResults(data);
     },
     "update-account-association": async function() {
       var data = await aspWebRTC.updateAccountAssociation(argv.providerid, argv.accountid, argv.networktype, argv.skillid);
-      outputResults(data);
+      return outputResults(data);
     },
     "query-network-mapping": async function() {
       var data = await aspWebRTC.queryAccountAssociation(argv.query);
-      outputResults(data);
+      return outputResults(data);
       },
 
      ///////// PBX //////////////////////////   
      
      "create-sip-trunk": async function() {
         var data = await aspPBX.createSipTrunk(argv.certchains, argv.certchainnames, argv.peernames,argv.peerports, argv.peerips);
-        outputResults(data);
+        return outputResults(data);
       },
 
       "get-sip-trunk": async function() {
@@ -465,41 +460,41 @@ export const actions = {
   },
   "update-endpoint-from-cache": async function() {
   var data = await updateFileCache(argv, null, argv.cache, argv.format);
-  console.log(JSON.stringify({export:"completed","status":200}, null, 2));
+  return data;
   },
 
   "update-endpoint-name": async function() {
     var data = await aspEndpoints.updateFriendlyName(argv.endpointid, argv.name);
-    outputResults(data);
+    return outputResults(data);
   },
   "associate-unit": async function() {
     var data = await aspEndpoints.associateUnit(argv.endpointid, argv.unitid);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
   "disassociate-unit": async function() {
     var data = await aspEndpoints.disassociateUnit(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
   "deregister-endpoint": async function() {
     var data = await aspEndpoints.deregisterEndpoint(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
   "forget-endpoint": async function() {
     var data = await aspEndpoints.forgetEndpoint(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
   "get-address": async function() {
     var data = await aspEndpoints.getEndpointAddress(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-address": async function() {
     var data = await aspEndpoints.postEndpointAddress(argv.endpointid, argv.addressline1, argv.addressline2, 
       argv.addressline3, argv.city, argv.stateorregion, argv.districtorcounty, argv.postalcode, argv.countrycode);
-    outputResults(data);
+      return outputResults(data);
   },
   
 ///////// Endpoint Features //////////////////////////
@@ -507,75 +502,76 @@ export const actions = {
 /// Bluetooth ////
   "get-bluetooth-features": async function() {
     var data = await aspBluetooth.getBluetoothFeatures(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "unpair-all-bluetooth-devices": async function() {
     var data = await aspBluetooth.unpairAllBluetoothDevices(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
 
 /// Connectivity ////
   "get-endpoint-connectivity": async function() {
     var data = await aspEndpoints.getEndpointConnectivity(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
     return data;
   },
 
   "get-brightness": async function() {
     var data = await aspEndpoints.getBrightness(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-brightness": async function() {
     var data = await aspEndpoints.setBrightness(argv.endpointid,argv.operation, argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-color": async function() {
     var data = await aspEndpoints.getEndpointColor(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-color": async function() {
     var data = await aspEndpoints.setEndpointColor(argv.endpointid,argv.hsb, argv.hue, argv.saturation, argv.brightness);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-color-temperature": async function() {
     var data = await aspEndpoints.getColorTemperature(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-color-temperature": async function() {
     var data = await aspEndpoints.setColorTemperature(argv.endpointid,argv.operation, argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-power-state": async function() {
     var data = await aspEndpoints.getPowerState(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-power-state": async function() {
     var data = await aspEndpoints.setPowerState(argv.endpointid, argv.operation);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-speaker-properties": async function() {
     var data = await aspEndpoints.getSpeakerProperties(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-speaker-properties": async function() {
     var data = await aspEndpoints.setSpeakerProperties(argv.endpointid,argv.operation, argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-temperature": async function() {
     var data = await aspEndpoints.getTemperature(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
   "get-thermostat": async function() {
     var data = await aspEndpoints.getThermostat(argv.endpointid);
-    outputResults(data);
+    return outputResults(data);
   },
 
 ///////// WiFi Settings /////////////////////////
+
   "get-wifi-installation-status": async function() {
     var data = await aspWiFi.getWifiInstallationStatus(argv.endpointid, argv.operationid);
     return outputResults(data);
@@ -591,6 +587,15 @@ export const actions = {
     return outputResults(data);
   },
 
+  "forget-wifi-configurations": async function() {
+    var data = await aspWiFi.forgetWifiConfigurations(argv.endpointid, argv.ssid, argv.keymanagement);
+    return outputResults(data);
+  },
+
+  "get-wifi-configurations": async function() {
+    var data = await aspWiFi.getWifiConfigurations(argv.endpointid);
+    return outputResults(data);
+  },
 
   ///////// Endpoint Settings /////////////////////////
 
@@ -684,11 +689,11 @@ export const actions = {
     return outputResults(data);
   },
   "create-reminder": async function() {
-    var data = await aspReminders.createReminder(argv.endpointids, argv.requesttime, argv.offsetinseconds, argv.scheduledtime, argv.startdatetime, argv.enddatetime, argv.recurrencerules, argv.timezoneid, argv.locale, argv.text, argv.ssml, argv.pushnotificationstatus);
+    var data = await aspReminders.createReminder(argv.endpointids, argv.requesttime, argv.offsetinseconds, argv.scheduledtime, argv.startdatetime, argv.enddatetime, argv.recurrencerules, argv.timezoneid, argv.locale, argv.text, argv.ssml);
     return outputResults(data);
   },
   "update-reminder": async function() {
-    var data = await aspReminders.updateReminder(argv.reminderid, argv.endpointid, argv.requesttime, argv.offsetinseconds, argv.scheduledtime, argv.startdatetime, argv.enddatetime, argv.recurrencerules, argv.timezoneid, argv.locale, argv.text, argv.ssml, argv.pushnotificationstatus);
+    var data = await aspReminders.updateReminder(argv.reminderid, argv.endpointid, argv.requesttime, argv.offsetinseconds, argv.scheduledtime, argv.startdatetime, argv.enddatetime, argv.recurrencerules, argv.timezoneid, argv.locale, argv.text, argv.ssml);
     return outputResults(data);
   },
   "delete-reminder": async function() {
@@ -700,7 +705,7 @@ export const actions = {
 
   "delete-all-notifications": async function() {
     var data = await aspNotifications.deleteAllNotifications(argv.unitids, argv.endpointids, argv.type);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "send-notification": async function() {
@@ -720,17 +725,17 @@ export const actions = {
   ///////// Users //////////////////////////
   "create-user": async function() {
     var data = await aspUsers.createUser(argv.orgid);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-users": async function() {
     var data = await aspUsers.listUsers(argv.orgid);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "delete-user": async function() {
     var data = await aspUsers.deleteUser(argv.userid);
-    outputResults(data);
+    return outputResults(data);
   },
 
   ////////// Roles ////////////////////////// 
