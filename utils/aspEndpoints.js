@@ -345,7 +345,8 @@ const settingsLookup = {donotdisturb:"Alexa.DoNotDisturb.doNotDisturb",
   errorsuppression:"Alexa.ManagedDevice.Settings.errorSuppression",
   maximumvolume:"Alexa.ManagedDevice.Settings.maximumVolumeLimit",
   timeformat:"Alexa.DataFormat.Time.timeFormat",
-  address:"address"
+  address:"address",
+  screencontrollerpolicy:"Alexa.ScreenController.screenControllerPolicy"
 
 };
 export async function getEndpointSettings(endpointId, keys) {
@@ -363,7 +364,7 @@ export async function getEndpointSettings(endpointId, keys) {
 
 
 
-  export async function putEndpointSetting(endpointId, setting, value) {
+  export async function putEndpointSetting(endpointId, setting, value, oldValue) {
     const config = {
       method: 'put',
       url: `/v2/endpoints/${endpointId}/settings/`
@@ -440,6 +441,13 @@ export async function getEndpointSettings(endpointId, keys) {
       case 'SpeechSynthesizer.speakingRate':
         //Valid values: [0.75, 0.85, 1, 1.25, 1.5, 1.75, 2]
         config.data = value;
+        break;
+      case 'Alexa.ScreenController.screenControllerPolicy':
+        value = JSON.parse(value);
+        if (!oldValue) {
+          oldValue = {};
+        }
+        config.data = {...oldValue, ...value};
         break;
       default:
         console.log('Invalid setting');

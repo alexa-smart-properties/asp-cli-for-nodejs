@@ -397,50 +397,49 @@ export const actions = {
 
       "get-sip-trunk": async function() {
         var data = await aspPBX.getSipTrunk(argv.trunkid);
-        outputResults(data);
+        return outputResults(data);
       },
       "get-sip-trunks": async function() {
         var data = await aspPBX.getSipTrunks();
-        outputResults(data);
+        return outputResults(data);
       },
 
       "update-sip-trunk": async function() {
         var data = await aspPBX.updateSipTrunk(argv.trunkid,argv.certchains, argv.certchainnames, argv.peernames,argv.peerports, argv.peerips);
-        outputResults(data);
+        return outputResults(data);
       },
 
       "delete-sip-trunk": async function() {
         var data = await aspPBX.deleteSipTrunk(argv.trunkid);
-        outputResults(data);
+        return outputResults(data);
       },
 
       "create-extension-mapping": async function() {
         var data = await aspPBX.mapExtension(argv.trunkid, argv.extension, argv.profileid, argv.routingtype);
-        outputResults(data);
+        return outputResults(data);
       },
       "get-extension-mapping": async function() { 
         var data = await aspPBX.getExtensionMapping(argv.trunkid, argv.extension);
-        outputResults(data);
+        return outputResults(data);
       },
       "update-extension-mapping": async function() {
         var data = await aspPBX.updateExtensionMapping(argv.trunkid, argv.extension, argv.profileid, argv.routingtype);
-        outputResults(data);
+        return outputResults(data);
       },
       "delete-extension-mapping": async function() {
         var data = await aspPBX.deleteExtensionMapping(argv.trunkid, argv.extension);
-        outputResults(data);
+        return outputResults(data);
       },
       "list-extensions": async function() {
         var data = await aspPBX.listExtensions(argv.trunkid);
-        outputResults(data);
+        return outputResults(data);
       },
 
     ///////// Endpoints //////////////////////////
 
   "get-endpoints": async function() {
     var data = await aspEndpoints.getEndpoints(argv.unitid, argv.manufacturer);
-    outputResults(data);
-    return data;
+    return outputResults(data);
   },
   "query-endpoints": async function() {
     var data = await aspEndpoints.queryEndpoints(argv.query, argv.expand);
@@ -601,77 +600,77 @@ export const actions = {
 
   "get-endpoint-settings": async function() {
     var data = await aspEndpoints.getEndpointSettings(argv.endpointid, argv.keys);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "update-endpoint": async function() {
-    var data = await aspEndpoints.putEndpointSetting(argv.endpointid,argv.setting, argv.value);
-    outputResults(data);
+    var data = await aspEndpoints.putEndpointSetting(argv.endpointid,argv.setting, argv.value, argv.oldvalue);
+    return outputResults(data);
   },
 
   "set-donotdisturb": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"donotdisturb", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-locales": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"locales", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-wakewords": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"wakewords", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-wakewordconfirmation": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"wakewordconfirmation", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-speechconfirmation": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"speechconfirmation", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-followup": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"followup", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-temperatureunit": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"temperatureunit", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-distanceunits": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"distanceunits", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-magnifier": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"magnifier", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-closedcaptions": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"closedcaptions", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-alexacaptions": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"alexacaptions", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-colorinversion": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"colorinversion", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-timezone": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"timezone", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-speakingrate": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"speakingrate", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-errorsuppression": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"errorsuppression", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-maximumvolume": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"maximumvolume", argv.value);
-    outputResults(data);
+    return outputResults(data);
   },
   "set-timeformat": async function() {
     var data = await aspEndpoints.putEndpointSetting(argv.endpointid,"timeformat", argv.value);
@@ -748,28 +747,28 @@ export const actions = {
               argv.ratingtext , argv.ratingnumber, argv.backgroundimage, argv.attributionimage, argv.thumbnailimage,
               argv.actiontype, argv.actionuri, argv.actioninput, argv.listhinttexts, argv.listthumbnailimages
       );
-    outputResults(data);
+      return outputResults(data);
   },
 
   "get-campaigns": async function() {
     var data = await aspCampaigns.listCampaigns();
-    outputResults(data);
+    return outputResults(data);
   },
 
   "query-campaigns": async function() {
 
     var data = await aspCampaigns.queryCampaigns(argv.query);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "get-campaign": async function() {
     var data = await aspCampaigns.getCampaign(argv.campaignid);
-    outputResults(data);
+    return outputResults(data);
   },
 
   "delete-campaign": async function() {
     var data = await aspCampaigns.deleteCampaign(argv.campaignid);
-    outputResults(data);
+    return outputResults(data);
   },
 
 ///////// SNS Events //////////////////////////
@@ -830,15 +829,24 @@ export const actions = {
 
 };
 
-function preProcess(args) {
-  if (argv.delay !== undefined) {
+export function preProcess(args) {
+
+  if (argv.delay) {
     apiSettings.apiDelay = argv.delay;
   }
-  if (argv.includeapicall !== undefined) {
+  if (argv.includeapicall) {
     apiSettings.includeApiCall = JSON.parse(argv.includeapicall);
+  } else {
+    apiSettings.includeApiCall = false;
+  }
+  if (argv.nocall) {
+    apiSettings.noCall = JSON.parse(argv.nocall);
+  } else {
+    apiSettings.noCall = false;
   }
   //update args from config defaults
   const defaults = config.get('defaults');
+ 
   if (defaults) {
     Object.keys(defaults).forEach(key => {
       if (!argv.hasOwnProperty(key)) {
@@ -846,6 +854,7 @@ function preProcess(args) {
       }
     });
   }
+
 }
 
 export function outputResults(data, outputParams = null) {

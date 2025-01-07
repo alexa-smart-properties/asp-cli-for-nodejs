@@ -20,13 +20,13 @@ function translateKeys(keys, lookup) {
   }
   
 //create-campaign
-export async function createCampaign(type="wrapping", unitids, start, end, locale="en-US",
-headerText=null, primaryText="", secondaryText="", tertiaryText="", attributionText, hintText, callToActionButtonText, playbackEnabled= false,
+export async function createCampaign(type="textwrapping", unitids, start, end, locale="en-US",
+headerText="", primarytext="", secondaryText="", tertiaryText="", attributionText, hintText, callToActionButtonText, playbackEnabled= false,
 ratingText, ratingNumber, backgroundImage= null, attributionImage = null, thumbnailImage,
 actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, listThumbnailImages = "") {
 
     let template = translateKeys(type, templates);
-
+    
     const config = {
         method: 'post',
         url: '/v1/proactive/campaigns',
@@ -69,7 +69,7 @@ actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, l
         case 'textwrapping': 
             datasources = {"displayText": {
             "headerText": (headerText || null),
-            "primaryText": (primaryText || null),
+            "primaryText": (primarytext || null),
             "secondaryText": (secondaryText || null),
             "hintText": (hintText || null),
             "tertiaryText": (tertiaryText || null),
@@ -90,7 +90,7 @@ actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, l
                 },
                 "displayText": {
                     "headerText": (headerText || null),
-                    "primaryText": (primaryText || null),
+                    "primaryText": (primarytext || null),
                     "secondaryText": (secondaryText || null),
                     "tertiaryText": (tertiaryText || null),
                     "hintText": (hintText || null)
@@ -111,7 +111,7 @@ actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, l
                 "headerText": (headerText || null),
                 "ratingNumber": (ratingNumber || null),
                 "ratingText": (ratingText || null),
-                "primaryText": (primaryText || null),
+                "primaryText": (primarytext || null),
                 "hintText": (hintText || null)
                 },
                 "background": {
@@ -148,7 +148,7 @@ actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, l
                 "displayText": {
                     "headerText": (headerText || null),
                     "hintText": (hintText || null),
-                    "primaryText": (primaryText || null),
+                    "primaryText": (primarytext || null),
                     "action": {
                     "type": (actionType || null),
                     "uri": (actionUri || null),
@@ -163,7 +163,7 @@ actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, l
             datasources = {
                 "displayText": {
                     "hintText": (hintText || null),
-                    "primaryText": (primaryText || null),
+                    "primaryText": (primarytext || null),
                     "secondaryText": (secondaryText || null),
                     "action": {
                         "type": (actionType || null),

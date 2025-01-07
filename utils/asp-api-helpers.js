@@ -11,13 +11,14 @@ const cancelTokenSource = axios.CancelToken.source();
 export const apiSettings = 
 {
   orgid :"",
-  apiDelay : 1000,
+  apiDelay : 10,
   baseURL : 'https://api.amazonalexa.com',
   authToken : "",
   backoff: "2000,3000,5000,8000,13000,21000",
   maxBatchIds: 100,
   maxResults: 10,
-  includeApiCall: false
+  includeApiCall: false,
+  noCall: false // prevents api calls and just return config
 }
 
 function apiCallDelay(ms) {
@@ -27,6 +28,8 @@ function apiCallDelay(ms) {
 let backoff;
 
 export async function getAPIResponse(config, backoffIndex) {
+
+  if (apiSettings.noCall) {return {data:{apicall:config}}}
 
   if (backoffIndex === undefined && apiSettings.backoff.length > 0) {
     backoff = apiSettings.backoff.split(',');
@@ -122,8 +125,13 @@ export async function getBatchResults(config, itemtemplate, idName="id", ids, ar
     });
 
     config.data[arrayName] = items;
-
+    
     const response = await getAPIResponse(config);
+
+    if (apiSettings.noCall) {  
+      return response;
+    }
+
     if (response.status > 299) {  
       return response;
     }
