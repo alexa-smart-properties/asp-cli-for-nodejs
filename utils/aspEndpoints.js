@@ -349,6 +349,12 @@ const settingsLookup = {donotdisturb:"Alexa.DoNotDisturb.doNotDisturb",
   screencontrollerpolicy:"Alexa.ScreenController.screenControllerPolicy"
 
 };
+
+
+export function getSettingKeyByValue(value) {
+  return Object.keys(settingsLookup).find(key => settingsLookup[key] === value);
+}
+
 export async function getEndpointSettings(endpointId, keys) {
 
   keys = translateKeys(keys, settingsLookup);

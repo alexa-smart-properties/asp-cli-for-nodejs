@@ -54,7 +54,7 @@ export async function queryNotifications(unitids, endpointids, notificationType 
   }
   else if (endpointids) {
     endpointids = endpointids.split(',');
-    ands.push({"or": endpointids.map(unitid => ({"match": { "recipients.id": endpointids}}))});
+    ands.push({"or": endpointids.map(endpointid => ({"match": { "recipients.id": endpointid}}))});
     ands.push({"match": {"recipients.type": "Endpoint"}});
   }
 
@@ -123,7 +123,7 @@ export async function sendNotification(unitids, endpointids, type="DeviceNotific
       values = [{"locale": locale,"text": text}];
       contentType = "SpokenText";
       break;
-    case 'PersistentVisualAlert':
+    case 'PersistentVisualAlert': {
       let datasources ={
           "displayText": {
               "primaryText": primaryText,
@@ -210,7 +210,7 @@ export async function sendNotification(unitids, endpointids, type="DeviceNotific
       contentType = "V0Template";
       break;
 
-
+    }
   }
 
   if (unitids && endpointids) {

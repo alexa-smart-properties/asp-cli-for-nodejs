@@ -13,7 +13,7 @@ export async function useFileCache() {
     try 
     {
         fileData = fs.readFileSync(args.cache, 'utf8');
-    } catch (err) {
+    } catch {
     
         throw new Error(`Error using cache file: ${args.cache}. Verify the --cache parameter is correct and the file can be created.`);
     }   
@@ -38,7 +38,7 @@ export async function useFileCache() {
         if (!fs.existsSync(file)) {
             fs.writeFileSync(file, JSON.stringify({}), 'utf8');
         }
-    } catch (err) {
+    } catch {
     
         throw new Error(`Error creating cache file: ${file}. Verify the --cache parameter is correct and the file can be created.`);
     }   

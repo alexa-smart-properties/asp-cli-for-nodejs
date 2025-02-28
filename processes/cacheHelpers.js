@@ -3,7 +3,7 @@
 // Licensed under the Amazon Software License  http://aws.amazon.com/asl/
 
 import { getUnit, getUnits} from '../utils/aspProperty.js';
-import { getEndpoints, getEndpoint } from '../utils/aspEndpoints.js';
+import { getEndpoint } from '../utils/aspEndpoints.js';
 
 export function cacheUnit(json, unit, format, type="unit") {
   if (!json["units"]) {
@@ -34,17 +34,16 @@ export function formatUnit(unit, format, type="unit") {
   
   switch (format) {
     case "ids-only":
-    case "compact":
-            let formattedUnit = {"id": unit.id};//, parentid: item.parentId};
-            if (format === "compact") 
-            {
-              formattedUnit = {...formattedUnit, "name": unit.name.value.text,type: type, level: unit.level};
-            }
-            return formattedUnit;
-      break;
+    case "compact": {
+        let formattedUnit = {"id": unit.id};//, parentid: item.parentId};
+        if (format === "compact") 
+        {
+          formattedUnit = {...formattedUnit, "name": unit.name?.value?.text,type: type, level: unit.level};
+        }
+        return formattedUnit;
+      }
     default:
       return {...unit, type: type};
-      break;
   }
 }
 
@@ -52,7 +51,7 @@ export function formatEndpoint(endpoint, format) {
   
   switch (format) {
     case "ids-only":
-    case "compact":
+    case "compact": {
             let formattedEndpoint = {"id": endpoint.id}
             if (format === "compact") 
             {
@@ -61,13 +60,14 @@ export function formatEndpoint(endpoint, format) {
                     model: endpoint.model?.value?.text, 
                     serial: endpoint.serialNumber?.value?.text,
                     manufacturer: endpoint.manufacturer?.value?.text,
+                    softwareVersion: endpoint.softwareVersion?.value?.text,
+                    //macAddress: endpoint.connections[0].macAddress,
                     associatedunits: endpoint.associatedUnits.map(unit => unit.id)};
             }
             return formattedEndpoint;
-      break;
+          }
     default:
       return endpoint
-      break;
   }
 }
 
@@ -75,7 +75,7 @@ export function formatSkill(skill, format) {
   
   switch (format) {
     case "ids-only":
-    case "compact":
+    case "compact": {
             let formattedSkill = {"id": skill.skill.id}
             if (format === "compact") 
             {
@@ -86,10 +86,9 @@ export function formatSkill(skill, format) {
               };
             }
             return formattedSkill;
-      break;
+          };
     default:
       return skill
-      break;
   }
 }
 
@@ -97,7 +96,7 @@ export function formatContact(contact, format) {
   
   switch (format) {
     case "ids-only":
-    case "compact":
+    case "compact": {
             let formattedContact = {"id": contact.contactId}
             if (format === "compact") 
             {
@@ -113,10 +112,9 @@ export function formatContact(contact, format) {
               //add webrtc id
             }
             return formattedContact;
-      break;
+          }
     default:
       return contact
-      break;
   }
 }
 
@@ -309,7 +307,7 @@ export async function buildUnits(json, parentid, includes, format) {
     for (let unit of units) {
       let formattedUnit = formatUnit(unit, format);
       let length = json.units.push(formattedUnit);
-      console.log("Adding unit::" + formattedUnit.id + "::" + unit.name.value.text );
+      console.log("Adding Unit::" + formattedUnit.id + "::" + unit.name.value.text );
       json.units[length - 1] = await buildUnits(json.units[length - 1], unit.id, includes, format);
     }
     return json;

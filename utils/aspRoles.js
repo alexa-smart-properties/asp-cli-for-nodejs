@@ -6,65 +6,88 @@
 
 import {getAPIResponse, getAPICombinedResults} from './asp-api-helpers.js';
 
-// create-user
-export async function createUser(orgid) {
-    const config = {
-        method: 'post',
-        url: '/v1/auth/users',
-        data: {
-            "organizationId": orgid
-        }
-    };
+// Roles /////////////////////////////////////////////////////////////
 
-    const data = await getAPIResponse(config);
-    return data;
-}
-
-// get-users
-export async function listUsers(orgid) {
-    const config = {
-        method: 'get',
-        url: `/v1/auth/users?organizationId=${orgid}&maxResults=10`
-    };
-
-    const data = await getAPICombinedResults(config);
-    return data;
-}
-
-// delete-user
-export async function deleteUser(userId) {
-    const config = {
-        method: 'delete',
-        url: `/v1/auth/users/${userId}`
-    };
-
-    const data = await getAPIResponse(config);
-    return data;
-}
-
+//batch-assign-role
+//batch-revoke-role
 
 //get-roles
-export async function listRoles(unitId, roleName, targetEntityId) {
+export async function getRoles(unitId, roleName, groupId) {
     const config = {
         method: 'get',
-        url: `/v1/roles?unitId=${unitId}${roleName ? "&roleName=" + roleName : ""}&targetEntityId=${targetEntityId}&maxResults=10`
+        url: `/v1/roles?${unitId ? "unitId=" + unitId : ""}${roleName && "&roleName=" + groupId}${groupId && "&targetEntityId=" + groupId}`
     };
 
     const data = await getAPICombinedResults(config);
+    return data;
+}
+
+//get-role
+export async function getRole(roleid) {
+    const config = {
+      method: 'get',
+      url: `/v1/roles/${roleid}`
+    };
+  
+    const data = await getAPIResponse(config);
     return data;
 }
 
 // assign-role
-export async function assignRole(roleId, principalId, propagate) {
+export async function assignRole(roleId, principalid, propagate=false, expiresat) {
     const config = {
         method: 'post',
         url: `/v1/roles/${roleId}/assignments`,
-        data: {
-            "principalId": principalId
+        data:
+         {
+                    "principalId": principalid,
+                    "propagate": propagate,
+                    ...(expiresat && { expiresAt:expiresat })
         }
     };
-    if (propagate !== undefined) { config.data.propagate = propagate; }
-
+    
     const data = await getAPIResponse(config);
+    return data;
+}
+
+// revoke-role
+export async function revokeRole(roleid, principalid, propagate = false) {
+    const config = {
+      method: 'delete',
+      url: `/v1/roles/${roleid}/assignments`,
+      params: {
+        principalId: principalid,
+        propagate: propagate
+      }
+    };
+  
+    const data = await getAPIResponse(config);
+    return data;
+}
+
+//get-principal-assignments
+export async function getPrincipalAssignments(roleId) {
+    const config = {
+        method: 'get',
+        url: `/v1/roles/${roleId}/assignments`,
+      
+    };
+
+    const data = await getAPICombinedResults(config);
+    return data;
+}
+
+//get-role-assignments
+export async function getRoleAssignments(principalId,unitId,groupId) {
+    const config = {
+      method: 'get',
+      url: `/v1/roles/assignments?principalId=${principalId}${unitId ? `&unitId=${unitId}` : ''}${groupId ? `&targetEntityId=${groupId}` : ''}`,
+      // params: {
+      // //  ...(unitId && { unitId: unitId }),
+      // //  ...(groupId && { targetEntityId: groupId })
+      // }
+    };
+  
+    const data = await getAPICombinedResults(config);
     return data;
 }

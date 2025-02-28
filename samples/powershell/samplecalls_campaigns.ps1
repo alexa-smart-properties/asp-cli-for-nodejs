@@ -78,8 +78,8 @@ $query = @"
     ]
 }
 "@
-$query = ($query | ConvertTo-Json).Replace('\n','')
-#echo $query
+$query = ($query | ConvertTo-Json).Replace('\n','') | ConvertFrom-Json
+echo $query
 
 # run the query to see campains using this unitid
 asp-cli query-campaigns --query $query

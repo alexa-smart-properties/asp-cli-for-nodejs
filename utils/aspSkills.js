@@ -177,7 +177,6 @@ export async function disableSkillForMultipleUnits(skillid, unitIds, stage="live
 
   skillid = translateKeys(skillid, skillLookup);
 
-  let i = 0;
   let itemTemplate = { "stage": stage, itemId:0};
 
   const config = {

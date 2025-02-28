@@ -4,7 +4,7 @@
 
 "use strict";
 
-import {getAPIResponse,getAPICombinedResults, getBatchResults} from './asp-api-helpers.js';
+import {getAPIResponse,getAPICombinedResults} from './asp-api-helpers.js';
 
 // create-subscription-configuration
 export async function createSubscriptionConfiguration(type='SNS', channeids, idempotencyToken = "1234567890") {
@@ -72,8 +72,6 @@ export async function createSubscription(configurationId, eventNamespace, eventN
         }
     };
 
-    console.log(unitId);
-
     let entities = {};
 
     switch (eventNamespace) {
@@ -106,8 +104,7 @@ export async function createSubscription(configurationId, eventNamespace, eventN
     config.data.entities = entities;
 
     const data = await getAPIResponse(config);
-    //console.log(parentId);
-    console.log(JSON.stringify(config, null, 2));
+
     return data;
 }
 

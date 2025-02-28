@@ -4,7 +4,7 @@
 
 "use strict";
 
-import {getAPIResponse,getAPICombinedResults, getBatchResults} from './asp-api-helpers.js';
+import {getAPIResponse} from './asp-api-helpers.js';
 
 
 // create-reminder

@@ -23,7 +23,7 @@ function translateKeys(keys, lookup) {
 export async function createCampaign(type="textwrapping", unitids, start, end, locale="en-US",
 headerText="", primarytext="", secondaryText="", tertiaryText="", attributionText, hintText, callToActionButtonText, playbackEnabled= false,
 ratingText, ratingNumber, backgroundImage= null, attributionImage = null, thumbnailImage,
-actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, listThumbnailImages = "") {
+actionType="SkillConnection", actionUri=null, actionInput=null, listHintTexts, listThumbnailImages = "") {
 
     let template = translateKeys(type, templates);
     
@@ -122,27 +122,28 @@ actionType="SkillConnection", actionUri=null, actioninput=null, listHintTexts, l
             if (thumbnailImage) {datasources.thumbnail.thumbnailImageSource = thumbnailImage;}
             if (backgroundImage) {datasources.background.backgroundImageSource = backgroundImage;}
           break;
-          case 'foryourday':
-            let listimages = listThumbnailImages.split(',');
-            let listitems = listHintTexts.split(',').map((item, index) => {
-                return {
-                    "hintText": item,
-                    "thumbnailSource": (listimages[index] || null)
-                }
-            });
-            datasources = {"displayText": {
-                "headerText": (headerText || null),
-                "listItems": listitems,
-                "action": {
-                    "type": (actionType || null),
-                    "uri": (actionUri || null),
-                    "input": {}
+          case 'foryourday': {
+                let listimages = listThumbnailImages.split(',');
+                let listitems = listHintTexts.split(',').map((item, index) => {
+                    return {
+                        "hintText": item,
+                        "thumbnailSource": (listimages[index] || null)
                     }
-                },
-                "background": {}
-            };
-            
-            break;
+                });
+                datasources = {"displayText": {
+                    "headerText": (headerText || null),
+                    "listItems": listitems,
+                    "action": {
+                        "type": (actionType || null),
+                        "uri": (actionUri || null),
+                        "input": (actionInput || null),
+                        }
+                    },
+                    "background": {}
+                };
+                
+                break;
+           }
         case 'onthisday':
             datasources = {
                 "displayText": {

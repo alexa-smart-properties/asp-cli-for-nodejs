@@ -11,7 +11,6 @@ import {getAPIResponse,getAPICombinedResults} from './asp-api-helpers.js';
 //get-units
 export async function getUnits(parentId, depth = 1) {
 
-  let expanded = true;
   let config = {
     method: 'get',
     url: `/v2/units?maxResults=50&parentId=${parentId}&expand=all&queryDepth=${depth}`,

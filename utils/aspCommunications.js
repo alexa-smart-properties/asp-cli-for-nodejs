@@ -4,7 +4,6 @@
 
 "use strict";
 
-import axios from 'axios';
 import {getAPIResponse, getAPICombinedResults} from './asp-api-helpers.js';
 
 /// Communication profiles /////////////////////////////////////////////////

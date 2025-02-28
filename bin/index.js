@@ -33,29 +33,39 @@ import * as aspPBX from '../utils/aspPBX.js';
 import * as aspEvents from '../utils/aspEvents.js';
 import * as aspReminders from '../utils/aspReminders.js';
 
-async function initSettings()
+let mode = "cli";
+
+export async function initSettings()
 {
   const configSettings = config.get('asp_cli');
 
+  if (configSettings.mode)
+  {
+    mode = configSettings.mode;
+  }
+
   //options iam,oauth,accesstoken
   switch (configSettings.auth) {
-  case "secretsManager":
-    var accessToken = await getAspAccessToken();
-    apiSettings.authToken = accessToken;
-    break;
-  case "oauthLocal":
-    var accessToken = getAccessToken();
-    if (!accessToken)
-    {
-      await refreshAccessToken();
-      accessToken = getAccessToken();
+  case "secretsManager": {
+      let accessToken = await getAspAccessToken();
+      apiSettings.authToken = accessToken;
+      break;
     }
-    apiSettings.authToken = accessToken;
-    break;
-  default:
-    const authConfig = config.get('oauthLocal');
-    apiSettings.authToken = authConfig.get("access_token");
-    break;
+  case "oauthLocal": {
+      let accessToken = getAccessToken();
+      if (!accessToken)
+      {
+        await refreshAccessToken();
+        accessToken = getAccessToken();
+      }
+      apiSettings.authToken = accessToken;
+      break;
+    }
+  default: {
+      const authConfig = config.get('oauthLocal');
+      apiSettings.authToken = authConfig.get("access_token");
+      break;
+    }
   }
 
   const aspConfig = config.get('asp_cli');
@@ -213,25 +223,21 @@ export const actions = {
   "create-communication-profile": async function() {
     var data = await aspCommunications.createCommunicationsProfile(argv.unitid, argv.profilename);
     return outputResults(data);
-    return data;
   },
 
   "update-communication-profile": async function() {
     var data = await aspCommunications.updateCommunicationsProfile(argv.profileid, argv.name);
     return outputResults(data);
-    return data;
   },
 
   "get-communication-profile": async function() {
     var data = await aspCommunications.getCommunicationProfile(argv.profileid, argv.unitid);
     return outputResults(data);
-    return data;
   },
 
   "delete-communication-profile": async function() {
     var data = await aspCommunications.deleteCommunicationProfile(argv.profileid);
     return outputResults(data);
-    return data;
   },
   "create-address-book": async function() {
     var data = await aspCommunications.createAddressBook(argv.name);
@@ -376,7 +382,7 @@ export const actions = {
     },
 
     "create-account-association": async function() {
-      var data = await aspWebRTC.createAccountAssociation();
+      var data = await aspWebRTC.createAccountAssociation(argv.providerid, argv.externaluserid, argv.profileid, argv.amazonidtype);
       return outputResults(data);
     },
     "update-account-association": async function() {
@@ -469,22 +475,18 @@ export const actions = {
   "associate-unit": async function() {
     var data = await aspEndpoints.associateUnit(argv.endpointid, argv.unitid);
     return outputResults(data);
-    return data;
   },
   "disassociate-unit": async function() {
     var data = await aspEndpoints.disassociateUnit(argv.endpointid);
     return outputResults(data);
-    return data;
   },
   "deregister-endpoint": async function() {
     var data = await aspEndpoints.deregisterEndpoint(argv.endpointid);
     return outputResults(data);
-    return data;
   },
   "forget-endpoint": async function() {
     var data = await aspEndpoints.forgetEndpoint(argv.endpointid);
     return outputResults(data);
-    return data;
   },
   "get-address": async function() {
     var data = await aspEndpoints.getEndpointAddress(argv.endpointid);
@@ -512,7 +514,6 @@ export const actions = {
   "get-endpoint-connectivity": async function() {
     var data = await aspEndpoints.getEndpointConnectivity(argv.endpointid);
     return outputResults(data);
-    return data;
   },
 
   "get-brightness": async function() {
@@ -739,6 +740,35 @@ export const actions = {
 
   ////////// Roles ////////////////////////// 
 
+  "create-role": async function() {
+    var data = await aspRoles.createRole(argv.orgid, argv.name, argv.description);
+    return outputResults(data);
+  },
+
+  "get-roles": async function() {
+    var data = await aspRoles.getRoles(argv.unitid, argv.rolename, argv.groupid);
+    return outputResults(data);
+  },
+  "assign-role": async function() {
+    var data = await aspRoles.assignRole(argv.roleid, argv.principalid, argv.propagate, argv.expiresat);
+    return outputResults(data);
+  },
+
+  "revoke-role": async function() {
+    var data = await aspRoles.revokeRole(argv.roleid, argv.principalid, argv.propagate);
+    return outputResults(data);
+  },
+
+  "get-role-assignments": async function() {
+    var data = await aspRoles.getRoleAssignments(argv.principalid,argv.unitid,argv.groupid);
+    return outputResults(data);
+  },
+
+  "get-principal-assignments": async function() {
+    var data = await aspRoles.getPrincipalAssignments(argv.roleid);
+    return outputResults(data);
+  },
+  
   ////////// Campaigns //////////////////////////
   "create-campaign": async function() {
     var data = await aspCampaigns.createCampaign(argv.type , argv.unitids, argv.start, argv.end, argv.locale,
@@ -829,6 +859,8 @@ export const actions = {
 
 };
 
+export let argv = {}
+
 export function preProcess(args) {
 
   if (argv.delay) {
@@ -849,7 +881,7 @@ export function preProcess(args) {
  
   if (defaults) {
     Object.keys(defaults).forEach(key => {
-      if (!argv.hasOwnProperty(key)) {
+      if (!Object.prototype.hasOwnProperty.call(argv,key)) {
         argv[key] = defaults[key];
       }
     });
@@ -894,6 +926,9 @@ export function outputResults(data, outputParams = null) {
       }
       i++;
     }
+    if (argv.directoutput) {
+      return value;
+    }
     if (typeof value === 'object') 
     {
       console.log(JSON.stringify(value, null, 2));
@@ -903,6 +938,9 @@ export function outputResults(data, outputParams = null) {
     return value;
    
   } else {
+      if (argv.directoutput) {
+        return data;
+      }
       if (typeof data === 'object') 
       {
         data["action"] = argv.action;
@@ -922,18 +960,19 @@ async function postProcess(args, result) {
   } 
 }
 
-Object.keys(actions).forEach(key => {
-  let action = actions[key];
-  actions[key] = async function() {
-
+export function wrapAction(actionName) {
+  
+    let action = actions[actionName];
+    actions[actionName] = async function() {
     let result = {};
     try {
       preProcess.apply(this, arguments);
       result = await action.apply(this, arguments);
       await postProcess.apply(this, [arguments, result]);
     }
-    catch (err) {
-      //throw err;
+    catch (err) 
+    {
+      throw err;
       let message = 'Invalid or missing parameters.';
       if (err.message) {
         message = err.message;
@@ -943,9 +982,15 @@ Object.keys(actions).forEach(key => {
     }
     return result;
   };
+}
+
+Object.keys(actions).forEach(key => {
+  wrapAction(key);
 });
 
-const argv = yargs(hideBin(process.argv))
+if(mode === "cli")
+{
+  argv = yargs(hideBin(process.argv))
   
   .option('action', {
     describe: 'ASP API action to perform. e.g. get-units, create-unit, update-unit, delete-unit',
@@ -962,10 +1007,14 @@ const argv = yargs(hideBin(process.argv))
   })
   .argv;
 
-const action = argv.action;
+  const action = argv.action;
 
-if (actions[action]) {
-  actions[action](argv);
-} else {
-  console.log('Unknown action: ' + action);
+  if (actions[action]) {
+    actions[action](argv);
+  } else {
+    console.log('Unknown action: ' + action);
+  }
 }
+
+
+

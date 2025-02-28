@@ -6,7 +6,7 @@
 
 import axios from 'axios';
 
-const cancelTokenSource = axios.CancelToken.source();
+//const cancelTokenSource = axios.CancelToken.source();
 
 export const apiSettings = 
 {
@@ -18,7 +18,7 @@ export const apiSettings =
   maxBatchIds: 100,
   maxResults: 10,
   includeApiCall: false,
-  noCall: false // prevents api calls and just return config
+  noCall: false // prevents api calls and just returns config
 }
 
 function apiCallDelay(ms) {
@@ -81,8 +81,6 @@ export async function getAPICombinedResults(config,arrayName="results") {
   let urlWithoutToken = config.url;
 
   do {
-    let url = config.url;
-    
     if (nextToken) {
       if (config.method === 'post') {
         config.data.paginationContext = {maxResults: apiSettings.maxResults, nextToken: nextToken};
@@ -102,11 +100,12 @@ export async function getAPICombinedResults(config,arrayName="results") {
     }
     if (!response.paginationContext)
     {
-      return combinedData;
+      break;
     }
     nextToken = response.paginationContext.nextToken;
   } while (nextToken);
 
+  delete combinedData.paginationContext;
   return combinedData;
 }
 

@@ -1,7 +1,6 @@
 // Copyright 2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
 // Licensed under the Amazon Software License  http://aws.amazon.com/asl/
-import fs from 'fs';
 
 import { getUnitById } from './cacheHelpers.js';
 
@@ -43,44 +42,48 @@ export async function useJSONCache() {
              console.log(`{}], "time": ${getPerfTime()}}`);
 
             break;
-        case 'delete-all-reminders':
-            console.log(`{"apply":"${args.apply}", "results":[`);
-            for (let unitid of getUnitIds(propertyBase)) {
-                var data = await aspUnitSettings.deleteAllReminders(unitid);
-                var output = { statuscode: data.statuscode, unitid : unitid};
-                console.log(JSON.stringify(output, null, 2) + ",");
+        case 'delete-all-reminders': {
+                console.log(`{"apply":"${args.apply}", "results":[`);
+                for (let unitid of getUnitIds(propertyBase)) {
+                    var data = await aspUnitSettings.deleteAllReminders(unitid);
+                    var output = { statuscode: data.statuscode, unitid : unitid};
+                    console.log(JSON.stringify(output, null, 2) + ",");
+                }
+                console.log(`{}], "time": ${getPerfTime()}}`);
+                break;
             }
-             console.log(`{}], "time": ${getPerfTime()}}`);
-            break;
-        case 'delete-all-timers':
-            console.log(`{"apply":"${args.apply}", "results":[`);
-            for (let unitid of getUnitIds(propertyBase)) {
-                var data = await aspUnitSettings.deleteAllTimers(unitid);
-                var output = { statuscode: data.statuscode, unitid : unitid};
-                console.log(JSON.stringify(output, null, 2) + ",");
+        case 'delete-all-timers': {
+                console.log(`{"apply":"${args.apply}", "results":[`);
+                for (let unitid of getUnitIds(propertyBase)) {
+                    var data = await aspUnitSettings.deleteAllTimers(unitid);
+                    var output = { statuscode: data.statuscode, unitid : unitid};
+                    console.log(JSON.stringify(output, null, 2) + ",");
+                }
+                console.log(`{}], "time": ${getPerfTime()}}`);
+                break;
             }
-             console.log(`{}], "time": ${getPerfTime()}}`);
-            break;
-        case 'delete-all-notifications':
-            var unitids = getUnitIds(propertyBase);
-            console.log(`{"apply":"${args.apply}", "results":[`);
-            while (unitids.length > 0) {
-                let batchUnitIds = unitids.splice(0, batchUnitIdsMax);
-                var data = await aspNotifications.deleteAllNotifications(batchUnitIds.join(","),null, args.type);
-                var output = {statuscode: data.statuscode, unitids: batchUnitIds};
-                console.log(JSON.stringify(output, null, 2) + ",");
+        case 'delete-all-notifications': {
+                var unitids = getUnitIds(propertyBase);
+                console.log(`{"apply":"${args.apply}", "results":[`);
+                while (unitids.length > 0) {
+                    let batchUnitIds = unitids.splice(0, batchUnitIdsMax);
+                    var data = await aspNotifications.deleteAllNotifications(batchUnitIds.join(","),null, args.type);
+                    var output = {statuscode: data.statuscode, unitids: batchUnitIds};
+                    console.log(JSON.stringify(output, null, 2) + ",");
+                }
+                console.log(`{}], "time": ${getPerfTime()}}`);
+                break;
             }
-             console.log(`{}], "time": ${getPerfTime()}}`);
-            break;
-        case 'set-default-music-station':
-            console.log(`{"apply":"${args.apply}", "results":[`);
-            for (let unitid of getUnitIds(propertyBase)) {
-                var data = await aspUnitSettings.setDefaultMusicStation(unitid, args.providerid, args.stationid);
-                var output = { statuscode: data.statuscode, unitid : unitid};
-                console.log(JSON.stringify(output, null, 2) + ",");
+        case 'set-default-music-station': {
+                console.log(`{"apply":"${args.apply}", "results":[`);
+                for (let unitid of getUnitIds(propertyBase)) {
+                    var data = await aspUnitSettings.setDefaultMusicStation(unitid, args.providerid, args.stationid);
+                    var output = { statuscode: data.statuscode, unitid : unitid};
+                    console.log(JSON.stringify(output, null, 2) + ",");
+                }
+                console.log(`{}], "time": ${getPerfTime()}}`);
+                break;
             }
-             console.log(`{}], "time": ${getPerfTime()}}`);
-            break;
         case  'enable-skills-for-unit':
             var skillids = args.skillids.split(",");
 
@@ -189,7 +192,7 @@ export async function useJSONCache() {
                 let batchUnitIds = unitids.splice(0, batchUnitIdsMax);
                 var data = await aspNotifications.sendNotification(batchUnitIds.join(","), null, args.type, args.text, args.locale,args.template, 
                 args.headertext, args.primarytext, args.secondarytext, args.tertiarytext, args["hinttext"], args.attributiontext, args.ratingtext, args.rating,
-                args.background,args.thumbnail,args.attributionimage, args.coloroverlay, args.dismissaltime, argv.dismissalhours, argv.dismissalminutes);
+                args.background,args.thumbnail,args.attributionimage, args.coloroverlay, args.dismissaltime, args.dismissalhours, args.dismissalminutes);
                 console.log(JSON.stringify(data, null, 2) + ",");
             }
              console.log(`{}], "time": ${getPerfTime()}}`);

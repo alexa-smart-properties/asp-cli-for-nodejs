@@ -4,7 +4,7 @@
 
 Before you can start using the `asp-cli`, you need to set up your environment. Follow these steps:
 
-1. Install NodeJS https://nodejs.org/en/download
+1. Install NodeJS https://nodejs.org/en/download 
 
 2. If using the bash sample scripts you will need to install https://jqlang.github.io/jq/download/ for your platform. Do not install jq via the nodejs npm package manager. The jq tool is a  command-line JSON processor used in the samples to parse ids and values out of api results.
 

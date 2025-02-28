@@ -4,7 +4,7 @@
 
 "use strict";
 
-import {getAPIResponse} from './asp-api-helpers.js';
+import {getAPIResponse,apiSettings} from './asp-api-helpers.js';
 
 ////// Endpoint WiFi ///////////////////////////////////////////
 
