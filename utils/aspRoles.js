@@ -15,7 +15,7 @@ import {getAPIResponse, getAPICombinedResults} from './asp-api-helpers.js';
 export async function getRoles(unitId, roleName, groupId) {
     const config = {
         method: 'get',
-        url: `/v1/roles?${unitId ? "unitId=" + unitId : ""}${roleName && "&roleName=" + groupId}${groupId && "&targetEntityId=" + groupId}`
+        url: `/v1/roles?${unitId ? "unitId=" + unitId : ""}${roleName && "&roleName=" + roleName}${groupId && "&targetEntityId=" + groupId}`
     };
 
     const data = await getAPICombinedResults(config);

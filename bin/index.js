@@ -32,6 +32,8 @@ import * as aspWebRTC from '../utils/aspWebRTC.js';
 import * as aspPBX from '../utils/aspPBX.js';
 import * as aspEvents from '../utils/aspEvents.js';
 import * as aspReminders from '../utils/aspReminders.js';
+import * as aspRoles from '../utils/aspRoles.js';
+import * as aspWiFiEnterprise from '../utils/aspWiFiEnterprise.js';
 
 let mode = "cli";
 
@@ -597,6 +599,38 @@ export const actions = {
     return outputResults(data);
   },
 
+  ///////// Enterprise WiFi Settings //////////////////////
+
+  "create-certificate-authority": async function() {
+    var data = await aspWiFiEnterprise.createCertificateAuthority(argv.friendlyname, argv.rotationperiod);//, argv.interval);
+    return outputResults(data);
+  },
+
+  "get-certificate-authority": async function() {
+    var data = await aspWiFiEnterprise.getCertificateAuthority(argv.certificateauthorityid, argv.expand);
+    return outputResults(data);
+  },
+
+  "update-certificate-authority": async function() {
+    var data = await aspWiFiEnterprise.updateCertificateAuthority(argv.certificateauthorityid, argv.friendlyname, argv.rotationperiod);//, argv.interval);
+    return outputResults(data);
+  },
+
+  "import-certificate": async function() {
+    var data = await aspWiFiEnterprise.importCertificate(argv.certificateauthorityid, argv.certificate, argv.certificatechain);
+    return outputResults(data);
+  },
+
+  "delete-certificate-authority": async function() {
+    var data = await aspWiFiEnterprise.deleteCertificateAuthority(argv.certificateauthorityid);
+    return outputResults(data);
+  },
+
+  "get-certificate-authorities": async function() {
+    var data = await aspWiFiEnterprise.getCertificateAuthorities(argv.expand);  
+    return outputResults(data);
+  },
+
   ///////// Endpoint Settings /////////////////////////
 
   "get-endpoint-settings": async function() {
@@ -829,7 +863,7 @@ export const actions = {
 
 // create-subscription
   "create-subscription": async function() {
-    var data = await aspEvents.createSubscription(argv.configurationid, argv.eventnamespace, argv.eventname, argv.parentid, argv.unitid, argv.skillid);
+    var data = await aspEvents.createSubscription(argv.configurationid, argv.eventnamespace, argv.eventname, argv.parentid, argv.unitid, argv.skillid, argv.token, argv.groupid);
     return outputResults(data);
   },  
 
@@ -840,7 +874,7 @@ export const actions = {
   },
 // get-subscriptions
   "get-subscriptions": async function() {
-    var data = await aspEvents.getSubscriptions(argv.unitid, argv.parentid, argv.eventnamespace, argv.eventname);
+    var data = await aspEvents.getSubscriptions(argv.unitid, argv.parentid,argv.groupid, argv.eventnamespace, argv.eventname);
     return outputResults(data);
   },
 
@@ -911,7 +945,12 @@ export function outputResults(data, outputParams = null) {
         
         const key = param.substring(0, param.indexOf('['));
         value = value[key].map(item => {
-          return item[outputParams[i + 1]]}
+            if (outputParams.length === i + 2)  {
+              return item[outputParams[i + 1]]
+            } else {
+              return item[outputParams[i + 1]][outputParams[i + 2]]
+            }
+          }
           ).join(',');
         break;
       } else if (param.includes('[') && param.includes(']')) {
@@ -952,7 +991,14 @@ export function outputResults(data, outputParams = null) {
 }
 
 async function postProcess(args, result) {
+  argv = {};
   
+  if (actions["postProcessOverride"]
+    && typeof actions["postProcessOverride"] === "function") {
+      await actions["postProcessOverride"](args, result);
+      return;
+  } 
+
   if (!argv.output && result && result.statuscode < 299) {
     if (args[0].cache) {
       await updateFileCache(args[0], result, args[0].cache, args[0].format);

@@ -59,7 +59,7 @@ export async function deleteSubscriptionConfiguration(configurationId) {
 }
 
 // create-subscription
-export async function createSubscription(configurationId, eventNamespace, eventName, parentId = null, unitId = null, skillId = null, idempotencyToken = "1234567890") {
+export async function createSubscription(configurationId, eventNamespace, eventName, parentId = null, unitId = null, skillId = null, idempotencyToken = "1234567890", groupid = null) {
     const config = {
         method: 'post',
         url: '/v1/eventMessenger/subscriptions',
@@ -99,7 +99,12 @@ export async function createSubscription(configurationId, eventNamespace, eventN
                 }
             }
             break;
-        }
+        case "Alexa.Group.Management":
+            if (groupid) {
+                entities.group = { "type": "AlexaGroup", "id": groupid }
+            }
+            break;
+    }
         
     config.data.entities = entities;
 
@@ -120,7 +125,7 @@ export async function getSubscription(subscriptionId) {
 }
 
 // get-subscriptions
-export async function getSubscriptions(unitId, parentId, eventNamespace, eventName) {
+export async function getSubscriptions(unitId, parentId, groupId, eventNamespace, eventName) {
     const config = {
         method: 'get',
         url: '/v1/eventMessenger/subscriptions?owner=~caller'
