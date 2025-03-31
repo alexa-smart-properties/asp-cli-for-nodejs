@@ -10,7 +10,7 @@ Before you can start using the `asp-cli`, you need to set up your environment. F
 
 3. Clone this repository to your computer
 
-   `clone git@github.com:alexa-smart-properties/asp-cli-for-nodejs`
+   `git clone git@github.com:alexa-smart-properties/asp-cli-for-nodejs`
 
 4. Update npm
 
