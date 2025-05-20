@@ -45,7 +45,7 @@ $signedCertEscaped = [Convert]::ToBase64String($signedCert)
 $certChainEscaped = [Convert]::ToBase64String($certChain)
 
 # Correctly expand variables and ensure proper spacing
-asp-cli import-certificate --certificateauthorityid=$caId --certificate "$signedCertEscaped" --certificatechain "$certChainEscaped" --nocall
+asp-cli import-certificate --certificateauthorityid=$caId --certificate "$signedCertEscaped" --certificatechain "$certChainEscaped"
 
 # Define the file paths
 $caCertFilePath = "ca_cert.pem"

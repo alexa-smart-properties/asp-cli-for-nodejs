@@ -82,7 +82,30 @@ export async function queryNotifications(unitids, endpointids, notificationType 
 export async function sendNotification(unitids, endpointids, type="DeviceNotification", text, locale ="en-US", template="wrapping", 
                                         headerText="", primaryText="", secondaryText="", tertiaryText="", hintText="", attributionText="",ratingText="",rating="0",
                                         background,thumbnail,attributionImage, colorOverlay=true, dismissalTime, dismissalHours, dismissalMinutes,
-                                        startTime, indicatorSound, interruptionLevel, restrictActions, optionListData) {
+                                        startTime, indicatorSound, interruptionLevel, restrictActions, optionListData,
+
+                                        paragraphText = "",
+                                        
+                                        backgroundaction="Dismiss",
+                                        backgroundactionurl,
+                                        backgroundalign="CENTER",
+                                        backgroundshape="ROUND", 
+                                        
+                                        thumbnailaction="Dismiss",
+                                        thumbnailactionurl,
+                                        thumbnailalign="LEFT", //"LEFT/RIGHT
+                                        thumbnailshape="ROUND", //"ROUND/SQUARE",
+                                        
+                                        //actionbutton
+                                        buttontext="Dismiss",
+                                        buttonaction="Dismiss",
+                                        buttonactionurl,               
+                                      ) {
+
+
+
+
+
 
                                           
   if (dismissalHours || dismissalMinutes) {
@@ -106,7 +129,9 @@ export async function sendNotification(unitids, endpointids, type="DeviceNotific
     wrapping:"doc://alexa/apl/documents/enterprise/notifications/persistentvisualalert/textWrappingTemplate",
     media:"doc://alexa/apl/documents/enterprise/notifications/persistentvisualalert/mediaThumbnailTemplate",
     rating:"doc://alexa/apl/documents/enterprise/notifications/persistentvisualalert/ratingTemplate",
-    optionlist: "doc://alexa/apl/documents/enterprise/notifications/persistentvisualalert/optionListTemplate"
+    optionlist: "doc://alexa/apl/documents/enterprise/notifications/persistentvisualalert/optionListTemplate",
+    imagelist: "doc://alexa/apl/documents/enterprise/notifications/persistentvisualalert/imageListTemplate",
+    buttonlist: "doc://alexa/apl/documents/enterprise/notifications/persistentvisualalert/buttonListTemplate"
   }
 
   let notificationType = translateKeys(type, templateLookup);
@@ -196,6 +221,55 @@ export async function sendNotification(unitids, endpointids, type="DeviceNotific
             if (thumbnail) {datasources.thumbnailImage = {
               "src": thumbnail
             };}
+            break;
+          case 'imagelist':
+          case 'buttonlist':
+            datasources = {
+              "attributionText": {"value": attributionText},
+              "primaryText":{"value":primaryText},
+              "secondaryText":{"value":secondaryText},
+              "paragraphText": {"value": paragraphText}, 
+              "hintText":{"value":hintText}
+            }
+
+            if (template === 'buttonlist') {
+              datasources.optionList = JSON.parse(optionListData);  
+            }
+            if (template === 'imagelist') { 
+              datasources.imageList = JSON.parse(optionListData);
+            }
+
+            datasources.attributionText.actions = backgroundaction ? [{type:backgroundaction,url:backgroundactionurl}] : null;
+            datasources.primaryText.actions = backgroundaction ? [{type:backgroundaction,url:backgroundactionurl}] : null;
+            datasources.secondaryText.actions = backgroundaction ? [{type:backgroundaction,url:backgroundactionurl}] : null;
+            datasources.hintText.actions = backgroundaction ? [{type:backgroundaction,url:backgroundactionurl}] : null;
+            datasources.paragraphText.actions = backgroundaction ? [{type:backgroundaction,url:backgroundactionurl}] : null;
+
+            if (background) {
+              datasources.background = {
+                "backgroundImageSource": background,
+                "shape": backgroundshape,
+                "alignment": backgroundalign,
+                colorOverlay: colorOverlay
+            };
+            if (backgroundaction) {datasources.background.actions = [{type:backgroundaction,url:backgroundactionurl}];}
+            }
+
+            if (thumbnail) {
+              datasources.thumbnailImage = {
+                "src": thumbnail,
+                "shape": thumbnailshape,
+                "alignment": thumbnailalign,
+              }
+              if (thumbnailaction) {datasources.thumbnailImage.actions = [{type:thumbnailaction,url:thumbnailactionurl}];}
+            }
+          
+            if (buttontext) {datasources.actionButton = {
+                  "value": buttontext, 
+                  "actions": [{type:buttonaction,url:buttonactionurl}] 
+              };
+            }
+
             break;
       }
 

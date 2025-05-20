@@ -28,7 +28,7 @@ async function getOAuthRequiredInfo(client) {
 }
 
 async function lwaOAuth(oauthInfo) {
-    const accessTokenHelper = config.get('secretsManager');
+
     const requestBody = {
         grant_type: 'refresh_token',
         refresh_token: oauthInfo['lwa-refresh-token'],
@@ -42,12 +42,7 @@ async function lwaOAuth(oauthInfo) {
             headers: { 'Accept': 'application/x-www-form-urlencoded' },
         });
 
-        //console.log('response.status', response.status);
-        //console.log('response.data', response.data);
-
         if (response.status === 200) {
-            //console.debug('response.data.access_token', response.data.access_token);
-            //console.log(response.data.access_token);
             return response.data.access_token;
         } else {
             return null;

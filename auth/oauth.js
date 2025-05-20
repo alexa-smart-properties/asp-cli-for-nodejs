@@ -28,7 +28,9 @@ export async function refreshAccessToken()
       maxBodyLength: Infinity,
       url: 'https://api.amazon.com/auth/o2/token',
       headers: { 
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type' : 'application/x-www-form-urlencoded',
+        'Authorization' : '',
+        'Asp-Cli' : ''
       },
       data : data
     };

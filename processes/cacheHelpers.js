@@ -297,6 +297,7 @@ export async function buildUnits(json, parentid, includes, format) {
     if (result.status === 404) {
       throw new Error("INVALID_UNIT_ID::" + parentid);
     }
+    
     let units = result.results;
     if (units.length === 0) {
       json.type = "unit";

@@ -117,7 +117,6 @@ export async function deleteCertificateAuthority(certificateAuthorityId) {
 }
 
 //get-certificate-authorities
-//TODO:validate expand default
 export async function getCertificateAuthorities(expand = 'all') {
   const config = {
     method: 'get',

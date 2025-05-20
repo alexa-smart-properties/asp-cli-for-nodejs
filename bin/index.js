@@ -747,7 +747,20 @@ export const actions = {
     var data = await aspNotifications.sendNotification(argv.unitids,argv.endpointids, argv.type, argv.text, argv.locale,argv.template, 
       argv.headertext, argv.primarytext, argv.secondarytext, argv.tertiarytext, argv.hinttext, argv.attributiontext, argv.ratingtext, argv.rating,
       argv.background,argv.thumbnail,argv.attributionimage, argv.coloroverlay, argv.dismissaltime, argv.dismissalhours, argv.dismissalminutes,
-     /*PVA 2.0*/ argv.starttime, argv.indicatorsound, argv.interruptionlevel, argv.restrictactions, argv.optionlistdata);
+     /*PVA 2.0*/ argv.starttime, argv.indicatorsound, argv.interruptionlevel, argv.restrictactions, argv.optionlistdata,
+     argv.paragraphText,
+     argv.backgroundaction,
+     argv.backgroundactionurl,
+     argv.backgroundalign,
+     argv.backgroundshape, 
+     argv.thumbnailaction,
+     argv.thumbnailactionurl,
+     argv.thumbnailalign, //"LEFT/RIGHT
+     argv.thumbnailshape, //"ROUND/SQUARE",
+     argv.buttontext,
+     argv. buttonaction,
+     argv.buttonactionurl, 
+    );
     return outputResults(data);
   },
 
@@ -1018,7 +1031,7 @@ export function wrapAction(actionName) {
     }
     catch (err) 
     {
-      throw err;
+      //throw err;
       let message = 'Invalid or missing parameters.';
       if (err.message) {
         message = err.message;
