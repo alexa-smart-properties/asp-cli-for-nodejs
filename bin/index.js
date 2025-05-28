@@ -585,7 +585,7 @@ export const actions = {
   },
 
   "save-wifi-configurations": async function() {
-    var data = await aspEndpoints.saveWifiConfigurations(argv.configurations,argv.host);
+    var data = await aspWiFi.saveWifiConfigurations(argv.configurations,argv.host);
     return outputResults(data);
   },
 

@@ -39,7 +39,11 @@ async function lwaOAuth(oauthInfo) {
 
     try {
         const response = await axios.post(oauthInfo['lwa-auth-url'], new URLSearchParams(requestBody), {
-            headers: { 'Accept': 'application/x-www-form-urlencoded' },
+            headers: { 'Accept': 'application/x-www-form-urlencoded',
+                        'Content-Type' : 'application/x-www-form-urlencoded',
+                        'Authorization' : '',
+                        'Asp-Cli' : '' 
+             },
         });
 
         if (response.status === 200) {
