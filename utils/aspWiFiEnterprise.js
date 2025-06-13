@@ -91,7 +91,7 @@ export async function updateCertificateAuthority(certificateAuthorityId, friendl
 
 //import-certificate
 export async function importCertificate(certificateAuthorityId, certificate, certificateChain) {
-  console.log(certificate);
+  
   const config = {
     method: 'post',
     url: `/v1/enterprise/certificateAuthorities/${certificateAuthorityId}/importCertificate`,

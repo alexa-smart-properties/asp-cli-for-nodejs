@@ -34,6 +34,7 @@ import * as aspEvents from '../utils/aspEvents.js';
 import * as aspReminders from '../utils/aspReminders.js';
 import * as aspRoles from '../utils/aspRoles.js';
 import * as aspWiFiEnterprise from '../utils/aspWiFiEnterprise.js';
+import * as aspAnalytics from '../utils/aspAnalytics.js';
 
 let mode = "cli";
 
@@ -897,6 +898,13 @@ export const actions = {
     return outputResults(data);
   },
 
+///////// Analytics //////////////////////////
+
+  "generate-report": async function() {
+    var data = await aspAnalytics.generateReport(argv.unitid, argv.categories, argv.startdate, argv.enddate, argv.granularity, argv.showsubunits, argv.s3bucketarn);
+    return outputResults(data);
+  },
+  
 ///////// API Direct Call //////////////////////////
 
 "direct-api-call": async function() {
