@@ -54,8 +54,8 @@ export async function listSkillEnablements(unitId) {
     method: 'get',
     url: `/v1/skills/enablements?unitId=${unitId}&maxResults=10&expand=nameFreeInvocation`
   };
-
-  const data = await getAPICombinedResults(config);
+  //only first 100 skills are returned
+  const data = await getAPIResponse(config);
   return data;
 }
 

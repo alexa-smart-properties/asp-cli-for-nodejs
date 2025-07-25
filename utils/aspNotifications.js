@@ -209,7 +209,7 @@ export async function sendNotification(unitids, endpointids, type="DeviceNotific
               "primaryText":{"value":primaryText},
               "secondaryText":{"value":secondaryText},
               "hintText":{"value":hintText},
-              optionList: JSON.parse(optionListData)
+              optionList: optionListData ? (typeof optionListData === 'string' ? JSON.parse(optionListData) : optionListData) : []
             }
             if (background) {datasources.backgroundImage = {
               "src": background,
