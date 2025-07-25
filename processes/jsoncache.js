@@ -5,7 +5,7 @@
 import { getUnit} from '../utils/aspProperty.js';
 import { getEndpoints,getEndpointConnectivity, getEndpointSettings,getSettingKeyByValue} from '../utils/aspEndpoints.js';
 import { listSkillEnablements} from '../utils/aspSkills.js';
-import { getCommunicationProfile, listContacts, listAddressBooks, getContact } from '../utils/aspCommunications.js';
+import { getCommunicationProfile, listContacts, listAddressBooks, getContact, listAddressBookAssociations } from '../utils/aspCommunications.js';
 import {getDefaultMusicStation} from '../utils/aspUnitSettings.js';
 
 import { formatUnit, formatEndpoint, formatSkill, formatContact, ensureUnitInCache, ensureEndpointInCache
@@ -227,6 +227,22 @@ export async function updateJSONCache(args, result, json, format="compact") {
                   return formattedSkill;
                   }));
             }  
+            return unit;
+          });
+        }
+
+        if (includes.includes("associations")){    
+          json = await applyFuncUnitHierarchy(json, async (unit) => {
+          
+            var result = await listAddressBookAssociations(unit.id);
+            if (result["results"]) {
+
+              unit.addressbooks = await Promise.all( result["results"].map(
+                (item) => {
+                  return item.addressBookId;
+                  }));
+            }  
+
             return unit;
           });
         }
