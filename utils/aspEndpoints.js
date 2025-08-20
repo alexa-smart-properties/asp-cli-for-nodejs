@@ -456,7 +456,7 @@ export async function getEndpointSettings(endpointId, keys) {
         config.data = {...oldValue, ...value};
         break;
       default:
-        console.log('Invalid setting');
+        config.data = value;
     }
 
     const data = await getAPIResponse(config);

@@ -4,13 +4,13 @@
 import config from "config";
 import fs from 'fs';
 import axios from "axios";
-import qs from 'qs';
+
 
 export async function refreshAccessToken()
 {
     const authConfig = config.get('oauthLocal');
 
-    let data = qs.stringify({
+    const params = new URLSearchParams({
       'grant_type': 'refresh_token',
       'refresh_token': authConfig.get("refresh_token"),
       'client_id': authConfig.get("client_id"),
@@ -19,8 +19,7 @@ export async function refreshAccessToken()
         "alexa::enterprise:management",
         "credential_locker::wifi_management",
         "profile",
-    ]
-
+    ].join(' ')
     });
 
     let postConfig = {
@@ -32,7 +31,7 @@ export async function refreshAccessToken()
         'Authorization' : '',
         'Asp-Cli' : ''
       },
-      data : data
+      data : params.toString()
     };
 
     await axios.request(postConfig)
