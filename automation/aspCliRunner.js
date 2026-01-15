@@ -17,12 +17,26 @@ export function addAction(key, action) {
     actions[key] = action;
 }
 
-export async function runAspCliAction(action, params = {}) {
+import config from 'config';
+import { getTokenForOrg } from '../auth/tokenManager.js';
+import axios from 'axios';
+import { apiSettings } from '../utils/asp-api-helpers.js';
 
+export async function runAspCliAction(action, params = {}, orgKey = null) {
+
+   // console.log('runAspCliAction::', action);
+   
+   if (orgKey && config.has(`organizations.${orgKey}`)) {
+     const orgConfig = config.get(`organizations.${orgKey}`);
+     const token = await getTokenForOrg(orgKey, orgConfig);
+     apiSettings.authToken = token;
+     axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+     if (orgConfig.orgid && !params.orgid) params.orgid = orgConfig.orgid;
+   }
+   
    for (var x in argv) {if (Object.prototype.hasOwnProperty.call(argv,x)) delete argv[x];}
 
     Object.assign(argv, params);
-
     argv.directoutput = true;
     argv.includeapicall = true;
     argv.action = action;

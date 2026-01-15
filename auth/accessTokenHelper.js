@@ -8,17 +8,14 @@ import config from "config";
 
 
 // This function gets secret string.
-async function getOAuthRequiredInfo(client) {
-    const accessTokenHelper = config.get('secretsManager');
+async function getOAuthRequiredInfo(client, secretsConfig) {
 		try {
 			 const getSecretValueResponse  = await client.send(
                 new sm.GetSecretValueCommand({
-                    SecretId: accessTokenHelper.get("secretNameForOAuth"),
-                    VersionStage: accessTokenHelper.get("versionStage"), // VersionStage defaults to AWSCURRENT if unspecified
+                    SecretId: secretsConfig.secretNameForOAuth,
+                    VersionStage: secretsConfig.versionStage || "AWSCURRENT",
                 })
             );
-			
-			//console.log('getSecretValueResponse.SecretString ', getSecretValueResponse );
 			
 			return JSON.parse(getSecretValueResponse.SecretString);
 		} catch (e) {
@@ -57,16 +54,16 @@ async function lwaOAuth(oauthInfo) {
     }
 }
 
-export async function  getAspAccessToken (){
+export async function getAspAccessToken() {
     const accessTokenHelper = config.get('secretsManager');
+    return await getAspAccessTokenWithConfig(accessTokenHelper);
+}
 
+export async function getAspAccessTokenWithConfig(secretsConfig) {
     let accessToken = '';
     try {
-        const regionName = accessTokenHelper.get("regionName");
-
-        // Create a Secrets Manager client
-        const client = new sm.SecretsManager({ region: regionName });
-        accessToken = await lwaOAuth(await getOAuthRequiredInfo(client));
+        const client = new sm.SecretsManager({ region: secretsConfig.regionName });
+        accessToken = await lwaOAuth(await getOAuthRequiredInfo(client, secretsConfig));
     } catch (error) {
         console.error(error);
     }
